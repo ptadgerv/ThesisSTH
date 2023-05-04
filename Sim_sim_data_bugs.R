@@ -297,14 +297,24 @@ save.image(file = "Scenario1_100rep.RData")
 getwd()
 load("Scenario1_100rep.RData")
 
-### DX inconsistency?
 rep1_scen1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
-temp<-rep1_scen1%>%group_by(School.name,ID)%>%summarise(Dx.mean=formatC(mean(DX), format = "e", digits = 2)) #some subjects seems to have different real DX status, not sure why.
-#write.csv(rep1_scen1, "rep1_scen1.csv")
+temp<-rep1_scen1%>%group_by(School.name,ID.sub)%>%summarise(Dx.mean=formatC(mean(DX), format = "e", digits = 2)) ### DX  is consistent
 
-#count1.mean and count10.mean is the rounded average for each subject or pool10 through all days and samples.
-# Is this requiered?
-sum(!(DF$ID.sub %in% 1:nrow(datatest)))
+rep1_scen1%>%group_by(School.name,ID.sub)%>%mutate(count1.mean.extra = min(count1.mean)) %>%ungroup()
+rep1_scen1.2<-rep1_scen1
+rep1_scen1.2%>%group_by(School.name,ID.sub)%>%mutate(count1.mean.min = min(count1.mean),count1.mean.mean = mean(count1.mean) )
+
+rep1_scen1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
+temp<-rep1_scen1%>%group_by(School.name,ID.sub)%>%summarise(count1.mean.extra=mean(count1.mean), School.name.extra=mean(School.name), ID.extra=mean(ID.sub), DX.extra=mean(DX))
+
+
+# count1.mean and count10.mean is the rounded average for each subject or pool10 through all days and samples.
+# This is requiered to produce data for the models that only use only one daya and sample like Rogen Gladen  and Levecke MoM
+
+dataDF1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
+write.csv(dataDF1, "dataDF1.csv")
+
+#sum(!(DF$ID.sub %in% 1:nrow(datatest)))
 datatest$count1.mean<-datatest[[1]]$count10.mean<-NA
 for (jj in 1:nrow(datatest)) {
   datatest$count1.mean[datatest$ID.sub==jj]<-DF$count1.mean[DF$ID.sub==jj][1]
