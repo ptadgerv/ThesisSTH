@@ -293,28 +293,16 @@ DF[[grid.sim[[kk]][["name"]] ]]<-lapply(
 #cat("\n")
 }
 save.image(file = "Scenario1_100rep.RData")
-save.image(file = "SesionSimu.RData")
+#save.image(file = "SesionSimu.RData")
 getwd()
-load("SesionSimu.RData")
+load("Scenario1_100rep.RData")
 
+### DX inconsistency?
 rep1_scen1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
+temp<-rep1_scen1%>%group_by(School.name,ID)%>%summarise(Dx.mean=formatC(mean(DX), format = "e", digits = 2)) #some subjects seems to have different real DX status, not sure why.
+#write.csv(rep1_scen1, "rep1_scen1.csv")
 
-temp<-rep1_scen1%>%group_by(School.name,ID)%>%summarise(Dx.mean=formatC(mean(DX), format = "e", digits = 2))
-write.csv(rep1_scen1, "rep1_scen1.csv")
-
-fff<-DF[[16]]
-
-#Now you need to make repetitions for each scenario!!!!
-#Add the name! and use the grid! Maybe we can use the name in the grid already
-data[["n = 50, baseline = NB, mu = 500"]] <- lapply(
-  X = reps,
-  FUN = simSTH,
-  n = 50,
-  params = list(  CV.i=1.5,mu=500, CV.d=0.75, pooln1=10, pooln2=25, CV.d.10=0.6,CV.d.25=0.5, CV.s=0.25, plotss=FALSE)
-)
-
-
-
+#count1.mean and count10.mean is the rounded average for each subject or pool10 through all days and samples.
 # Is this requiered?
 sum(!(DF$ID.sub %in% 1:nrow(datatest)))
 datatest$count1.mean<-datatest[[1]]$count10.mean<-NA

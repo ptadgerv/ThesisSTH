@@ -4,17 +4,16 @@ curve(exp_basehaz, from = 0, to = 5, lty = 1, ylim = c(0, 2), ylab = expression(
 curve(exp_weibull, from = 0, to = 5, lty = 2, add = TRUE)
 legend(x = "topleft", lty = 1:2, legend = c("Exponential baseline hazard", "Weibull baseline hazard"), bty = "n")
 
-
-simulate_data <- function(dataset, params = list()) {
+simulate_data <- function(dataset, n, baseline, params = list(), coveff = -0.50) {
   # Simulate treatment indicator variable
-  x <- rbinom(n = params$n, size = 1, prob = 0.5)
+  x <- rbinom(n = n, size = 1, prob = 0.5)
   # Draw from a U(0,1) random variable
-  u <- runif(params$n)
+  u <- runif(n)
   # Simulate survival times depending on the baseline hazard
-  if (params$baseline == "Exponential") {
-    t <- -log(u) / (params$lambda * exp(x * params$coveff))
+  if (baseline == "Exponential") {
+    t <- -log(u) / (params$lambda * exp(x * coveff))
   } else {
-    t <- (-log(u) / (params$lambda * exp(x * params$coveff)))^(1 / params$gamma)
+    t <- (-log(u) / (params$lambda * exp(x * coveff)))^(1 / params$gamma)
   }
   # Winsorising tiny values for t (smaller than one day on a yearly-scale, e.g. 1 / 365.242), and adding a tiny amount of white noise not to have too many concurrent values
   t <- ifelse(t < 1 / 365.242, 1 / 365.242, t)
@@ -26,21 +25,19 @@ simulate_data <- function(dataset, params = list()) {
   d <- as.numeric(t < 5)
   t <- pmin(t, 5)
   # Return a data.frame
-  data.frame(dataset = dataset, x = x, t = t, d = d, n = params$n, baseline = params$baseline, stringsAsFactors = FALSE)
+  data.frame(dataset = dataset, x = x, t = t, d = d, n = n, baseline = baseline, stringsAsFactors = FALSE)
 }
 
+set.seed(755353002)
 reps <- 1:100
 data <- list()
 data[["n = 50, baseline = Exp"]] <- lapply(
   X = reps,
   FUN = simulate_data,
-
-  params = list(lambda = 0.5,  n = 50,
-                baseline = "Exponential",coveff = -0.50)
+  n = 50,
+  baseline = "Exponential",
+  params = list(lambda = 0.5)
 )
-
-
-
 data[["n = 250, baseline = Exp"]] <- lapply(
   X = reps,
   FUN = simulate_data,
