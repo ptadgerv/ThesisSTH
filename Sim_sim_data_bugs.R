@@ -296,18 +296,24 @@ save.image(file = "Scenario1_100rep.RData")
 #save.image(file = "SesionSimu.RData")
 getwd()
 load("Scenario1_100rep.RData")
+load("C:\\Users\\32498\\Documents\\Master EPI\\SEM6\\Thesis\\SesionSimu.RData")
 
-rep1_scen1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
-temp<-rep1_scen1%>%group_by(School.name,ID.sub)%>%summarise(Dx.mean=formatC(mean(DX), format = "e", digits = 2)) ### DX  is consistent
-
-rep1_scen1%>%group_by(School.name,ID.sub)%>%mutate(count1.mean.extra = min(count1.mean)) %>%ungroup()
-rep1_scen1.2<-rep1_scen1
-rep1_scen1.2%>%group_by(School.name,ID.sub)%>%mutate(count1.mean.min = min(count1.mean),count1.mean.mean = mean(count1.mean) )
-
-rep1_scen1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
-temp<-rep1_scen1%>%group_by(School.name,ID.sub)%>%summarise(count1.mean.extra=mean(count1.mean), School.name.extra=mean(School.name), ID.extra=mean(ID.sub), DX.extra=mean(DX))
+#rep1_scen1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
+rep1_scen1<-as.data.frame(DF[["Number of shools:20. STH Prevalence:0.02. Number of days:2. Number of samples:1"]][[1]])
 
 
+temp<-rep1_scen1%>%group_by(ID.sub)%>%summarise(count1.mean.extra=mean(count1.mean), School.name.extra=mean(School.name), ID.extra=mean(ID.sub), DX.extra=mean(DX))
+kk=17
+tempo<-DF
+for (kk in 1:length(DF)) {
+  cat("Dataset number ");cat(kk, sep="\n")
+  for (mm in reps) {
+  tempo[[kk]][[mm]]<-DF[[grid.sim[[kk]][["name"]]]][[mm]]%>%as.data.frame%>%group_by(ID.sub)%>%summarise(count1.mean.extra=mean(count1.mean), School.name.extra=mean(School.name), ID.extra=mean(ID.sub), DX.extra=mean(DX))
+  }
+  cat("\n")
+}
+save.image(file = "DFandTEMPO.RData")
+#fff<-DF[[grid.sim[[kk]][["name"]]]][[2]]
 # count1.mean and count10.mean is the rounded average for each subject or pool10 through all days and samples.
 # This is requiered to produce data for the models that only use only one daya and sample like Rogen Gladen  and Levecke MoM
 
