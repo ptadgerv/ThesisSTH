@@ -188,13 +188,15 @@ results[["n = 250, baseline = Wei, model = RP(2)"]] <- do.call(
   )
 )
 
-
+class(results[["n = 50, baseline = Exp, model = Cox"]])
+verlo<-results[["n = 50, baseline = Exp, model = Cox"]]
 
 
 relhaz <- do.call(
   rbind.data.frame,
   results
 )
+view(relhaz)
 row.names(relhaz) <- NULL
 
 

@@ -5,13 +5,18 @@
 rm(list = ls())
 library(dplyr)
 set.seed(2023)
-gridd<-expand.grid(schools=c(20,50), prev.STH=c(0.01,0.02,0.03),var.STH=0.001,pooln1=10, CV.i=1.5,mu=1000, CV.d=0.75,   pooln2=25, CV.d.10=0.6,CV.d.25=0.5, CV.s=0.25, plotss=FALSE, TPR=0.88*0.88,TNR=0.97*0.97, n.s=150, n.days=c(1,2, 3), n.sample=c(1,2,3))
+gridd<-expand.grid(schools=c(10,20), prev.STH=c(0.01,0.03),var.STH=0.001,pooln1=10, CV.i=1.5,mu=1000, CV.d=0.75,   pooln2=25, CV.d.10=0.6,CV.d.25=0.5, CV.s=0.25, plotss=FALSE, TPR=0.88*0.88,TNR=0.97*0.97, n.s=100, n.days=c(1,2, 3), n.sample=c(1,2,3))
 gridd$nnn=gridd$schools*gridd$n.s
 gridd$Scenario<-rownames(gridd)
 gridd$name<-paste0("Number of shools:",gridd$schools,". STH Prevalence:",gridd$prev.STH,". Number of days:",gridd$n.days,". Number of samples:",gridd$n.sample)
-
-
-
+gridd$daysXsample<-gridd$n.days*gridd$n.sample
+gridd<-gridd[order(gridd$daysXsample),]
+gridd$scenario<-1:nrow(gridd)
+gridd$Info_level<-ifelse(gridd$daysXsample==1,"Low",ifelse(gridd$daysXsample==2,"Low Medium",ifelse(gridd$daysXsample==3,"Medium",ifelse(gridd$daysXsample==4,"Medium High",ifelse(gridd$daysXsample==6,"High", ifelse(gridd$daysXsample==9,"Very High",NA))))))
+library(openxlsx)
+openxlsx::write.xlsx(gridd, "gridd.xlsx")
+gridd<-openxlsx::read.xlsx("C:\\Users\\32498\\Downloads\\gridd.xlsx")
+gridd<-gridd[gridd$Decission=="keep",]
 grid.sim<-vector(mode='list', length=nrow(gridd))
 for (ji in 1:nrow(gridd)) {
 grid.sim[[ji]]<-gridd[ji,]
@@ -24,8 +29,9 @@ library(VGAM)
 
 #params=grid.sim
 
-simSTH <- function(datatest, params = list()) {
 
+start_time <- Sys.time()
+simSTH <- function(datatest, params = list()) {
 datatest<-vector(mode='list', length=length(params))
 #ji=1
 for (ji in 1:length(params)) {
@@ -106,12 +112,6 @@ for (ji in 1:length(params)) {
   datatest[[ji]]$CV.d<- params[[ji]]$CV.d
 
 
-  #################################XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  #################################XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  #################################XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  #################################XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  #################################XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-  #################################XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
   #replicating the datasets n.days times.
   datatest[[ji]]<- map(seq_len(n.days),~datatest[[ji]]) %>% bind_rows(.id="day")
   #datatest<-datatest.copy
@@ -201,13 +201,26 @@ for (ji in 1:length(params)) {
   datatest[[ji]]$Class2x2.b.ideal<-ifelse(datatest[[ji]]$DX.Miss==1,"P","N")
   datatest[[ji]]$Class2x2.ideal<-paste0(datatest[[ji]]$Class2x2.a,datatest[[ji]]$Class2x2.b)
 
+#  mids.count.error<-5
+#  for (ii in 1:(nnn*n.days*n.sample)) {
+#    datatest[[ji]]$count1[ii]<-ifelse(datatest[[ji]]$Class2x2.ideal[ii]=="FP",
+#                                      rpois(1,  lambda=(datatest[[ji]]$Mids1[ii]+mids.count.error)),
+#                                      rzipois(1,  lambda=datatest[[ji]]$Mids1[ii],pstr0 = 0.15))
+#    datatest[[ji]]$count10[ii]<-rpois(1, lambda=datatest[[ji]]$Mids10[ii])
+#  }
+
+
   mids.count.error<-5
   for (ii in 1:(nnn*n.days*n.sample)) {
-    datatest[[ji]]$count1[ii]<-ifelse(datatest[[ji]]$Class2x2.ideal[ii]=="FP",
+    datatest[[ji]]$count1[ii]<-rpois(1,  lambda=(datatest[[ji]]$Mids1[ii]+mids.count.error))
+      ifelse(datatest[[ji]]$Class2x2.ideal[ii]=="FP",
                                       rpois(1,  lambda=(datatest[[ji]]$Mids1[ii]+mids.count.error)),
-                                      rzipois(1,  lambda=datatest[[ji]]$Mids1[ii],pstr0 = 0.15))
+                                      rpois(1,  lambda=(datatest[[ji]]$Mids1[ii])))
     datatest[[ji]]$count10[ii]<-rpois(1, lambda=datatest[[ji]]$Mids10[ii])
   }
+
+
+
 
   #data.table::fwrite(datatest[[ji]],"datatestdatatest.csv")
   datatest[[ji]]$TestR1<-ifelse(datatest[[ji]]$count1==0,0,1)
@@ -248,7 +261,7 @@ for (ji in 1:length(params)) {
   datatest[[ji]]<-select(datatest[[ji]],-prev)
 
   temp.1<-datatest[[ji]]%>%group_by(ID.sub)%>%summarise(count1.mean=round(mean(count1),digits=0))
-  temp.10<-datatest[[ji]]%>%group_by(School.name,pool10)%>%summarise(count10.mean=round(mean(count10),digits=0))  #NOT SURE by whom should I round
+  temp.10<-datatest[[ji]]%>%group_by(School.name,pool10)%>%summarise(count10.mean=round(mean(count10),digits=0))
 
   datatest[[ji]]<-merge(datatest[[ji]],temp.1, by="ID.sub")
   datatest[[ji]]<-merge(datatest[[ji]],temp.10, by=c("School.name","pool10"))
@@ -284,15 +297,22 @@ for (ji in 1:length(params)) {
 
 DF<-list()
 reps=1:100
-#for (kk in 1:length(grid.sim)) {
-for (kk in 1:1) {
-#cat("Dataset number ");cat(kk, sep="\n")
+for (kk in 1:length(grid.sim)) {
+#for (kk in 1:1) {
 DF[[grid.sim[[kk]][["name"]] ]]<-lapply(
   X = reps,FUN = simSTH,
   params = list(grid.sim[[kk]]))
-#cat("\n")
 }
-save.image(file = "Scenario1_100rep.RData")
+end_time <- Sys.time()
+end_time - start_time
+
+((end_time - start_time)*((24-9)/24))/(9/24)
+#forecast time for 24 secanrios
+end_time - start_time+((end_time - start_time)*((24-9)/24))/(9/24)
+
+asas<-DF[["Number of shools:10. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]][[1]]
+
+save.image(file = "final_100rep.RData")
 #save.image(file = "SesionSimu.RData")
 getwd()
 load("Scenario1_100rep.RData")
@@ -317,19 +337,86 @@ for (kk in 1:length(DF)) {
   cat("\n")
 }
 save.image(file = "DFandTEMPO.RData")
+
 load(file = "DFandTEMPO.RData")
-
-
 library(prevalence)
 
 results <- DF
 
-for (kk in 1:1) {
-  for (ii in reps) {
-  results[[kk]][[ii]] <-prevalence::truePrev(x=sum(DF[[ grid.sim[[kk]][["name"]] ]][[ii]][[1]][["TestR1"]] ),n=length(DF[[ grid.sim[[kk]][["name"]] ]][[ii]][[1]][["TestR1"]]))
+class(DF[["Number of shools:20. STH Prevalence:0.01. Number of days:1. Number of samples:1"]][[1]])
+
+dataDF=DF
+gridsDF=grid.sim
+model= "Bayesian Rogen-Gladen"
+length(grid.sim)
+fit<-DF
+fit_models <- function(dataDF=DF, gridsDF=grid.sim,  model) {
+  # Fit model
+  if (model == "Bayesian Rogen-Gladen") {
+    dffit<-vector(mode='list', length=length(grid.sim))
+    #in 1:length(grid.sim)
+    #grid.sim[1]
+    #grid.sim[18]
+
+    for (kk in c(1,10,18) ) {  #KK IS THE NUMBER SCENARIOS
+      cat("Scenario ",kk,"\n")
+      dffit[[kk]]<-data.frame(matrix(nrow = length(grid.sim), ncol = 10))
+      colnames(dffit[[kk]])<-c("theta.sd", "theta","theta.var","theta.se","LIC", "UIC", "n", "Scenario","Dataset n", "model")
+      for (ii in 1:5) {  #REPS IS THE NUMBER OF REPETITION FOR EACH SCENARIO
+        fit[[kk]][[ii]] <- prevalence::truePrev(x=sum(dataDF[[ gridsDF[[kk]][["name"]] ]][[ii]][[1]][["TestR1"]] ),
+                                                n=length(dataDF[[ grid.sim[[kk]][["name"]] ]][[ii]][[1]][["TestR1"]]))
+        cat("Scenario ",kk," Rep #:",ii,"n: ",length(dataDF[[ grid.sim[[kk]][["name"]] ]][[ii]][[1]][["TestR1"]]),"\n")
+        as<-fit[[kk]][[ii]]
+        dffit[[kk]][ii,]<-c(theta.sd=as.numeric(summary(as)$TP[3,4]),theta=as.numeric(summary(as)$TP[3,1]),
+                            theta.var=as.numeric(summary(as)$TP[3,5]), theta.se=as.numeric(sqrt(summary(as)$TP[3,5])),
+                            LIC=as.numeric(summary(as)$TP[3,6]),UIC=as.numeric(summary(as)$TP[3,7]), n=as@par[["n"]], name=gridsDF[[kk]][["name"]],dataset.n=ii, model=model)
+
+
+      }
+    }
+#    relhaz2 <- do.call(
+#      rbind.data.frame,
+#      dffit
+#    )
+#    view(relhaz2)
+
+  }else if (model == "Method of Moment") {
+    fit <- rstpm2::stpm2(Surv(t, d) ~ x, dataDF = dataDF, df = 2)
+  } else { #Barenbold model
+    fit <- eha::phreg(Surv(t, d) ~ x, dataDF = dataDF, dist = "weibull", shape = 1)
   }
+  # Return relevant coefficients
+  data.frame(
+    dataset = unique(dataDF$dataset),
+    n = unique(dataDF$n),
+    baseline = unique(dataDF$baseline),
+    theta = coef(fit)["x"],
+    se = sqrt(ifelse(model == "Exp", fit$var["x", "x"], vcov(fit)["x", "x"])),
+    model = model,
+    stringsAsFactors = FALSE,
+    row.names = NULL
+  )
 }
 
+relhaz <- do.call(
+  rbind.data.frame,
+  dffit
+)
+view(relhaz2)
+class(relhaz)
+relhaz<-relhaz[!is.na(relhaz$theta),]
+relhaz$theta<-as.numeric(relhaz$theta)
+relhaz$theta.se<-as.numeric(relhaz$theta.se)
+relhaz$theta.sd<-as.numeric(relhaz$theta.sd)
+relhaz$theta.var<-as.numeric(relhaz$theta.var)
+relhaz$LIC<-as.numeric(relhaz$LIC)
+relhaz$UIC<-as.numeric(relhaz$UIC)
+relhaz$n<-as.numeric(relhaz$n)
+class(relhaz$n)
+str(relhaz)
+relhaz2<-subset(relhaz,select = c(theta,theta.se,model,n,Scenario))
+library(rsimsum)
+s <- rsimsum::simsum(data = relhaz2, estvarname = "theta", se = "theta.se", true = 0.02, methodvar = "model", ref = "Bayesian Rogen-Gladen", by = c("n", "Scenario"))
 
 
 
@@ -349,6 +436,12 @@ for (kk in 1:1) {
   )
   #cat("\n")
 }
+
+class(results)
+relhaz <- do.call(
+  rbind.data.frame,
+  results)
+row.names(relhaz) <- NULL
 
 
 #fff<-DF[[grid.sim[[kk]][["name"]]]][[2]]
