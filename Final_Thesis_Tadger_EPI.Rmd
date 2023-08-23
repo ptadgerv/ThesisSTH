@@ -1,0 +1,3163 @@
+---
+header-includes:
+  \usepackage{soul}
+  \usepackage{empheq}
+  \usepackage{array}
+  \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+  \usepackage{amsmath}
+  \usepackage{float}
+  \usepackage{hanging}
+  \usepackage{color, colortbl}
+  \definecolor{Gray}{gray}{0.9}
+  \usepackage{xcolor}
+  \usepackage[flushleft]{threeparttable}
+  \usepackage{graphicx} 
+  \usepackage{booktabs} 
+  \usepackage{caption}
+  \usepackage{hanging}
+  \usepackage{xparse}   
+acronyms:
+  keys:
+    - shortname: MDA
+      longname: Mass administration of Anthelminthic Drugs 
+    - shortname: MCMC
+      longname: Marcov Chain Monte Carlo 
+    - shortname: EPG
+      longname: Eggs Per Gram
+    - shortname: STHs
+      longname: Soil-Transmitted Helminths
+    - shortname: WHO
+      longname: World Health Organization
+    - shortname: KK
+      longname: Kato-Katz
+    - shortname: FEC
+      longname: Faecal Egg Counts
+    - shortname: MoM
+      longname: Method of Moment
+    - shortname: RGE
+      longname: Rogan-Gladen Estimator
+    - shortname: BRGE
+      longname: Bayesian Rogan-Gladen Estimator
+    - shortname: BRGI
+      longname: Bayesian Rogan-Gladen estimator for Individual samples
+    - shortname: BRGP
+      longname: Bayesian Rogan-Gladen estimator for Pooled samples
+    - shortname: AP
+      longname: Apparent Prevalence
+    - shortname: IGS
+      longname: Imperfect Gold Standard
+    - shortname: FGS
+      longname: Frequentist Gold Standard
+    - shortname: MCSE
+      longname: Monte Carlo Standard Error
+    - shortname: SE
+      longname: sensitivity
+    - shortname: SP
+      longname: specificity
+    - shortname: CV
+      longname: Coefficient of Variation
+    - shortname: CP90
+      longname: Coverage Probability 90%
+    - shortname: CP95
+      longname: Coverage Probability 95%
+    - shortname: MSE
+      longname: Mean Squared Error
+    - shortname: CT
+      longname:  Corrected Treated
+    - shortname: OT
+      longname: Over-treated
+    - shortname: UT
+      longname:  Under-treated
+    - shortname: DGM
+      longname:  Data Generating Mechanism
+    - shortname: IC
+      longname:  Credible Interval
+    - shortname: CI
+      longname:  Confidence Interval
+output:
+  pdf_document:
+    number_sections: true
+    fig_caption: yes
+    pandoc_args: !expr acronymsdown::add_filter()
+  word_document:
+    number_sections: true
+    fig_caption: yes
+    pandoc_args: !expr acronymsdown::add_filter()
+always_allow_html: true
+layout:  3p
+linestretch: 1.2
+linkcolor: black
+fontsize: 10pt
+date: "`r Sys.Date()`"
+bibliography: C:\\Users\\32498\\Documents\\Master EPI\\SEM6\\Thesis\\Thesis_EPI.bib
+numbersections: true
+urlcolor: black
+geometry: paperheight=29.7cm,paperwidth=21cm,margin=2.5cm
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,eval=TRUE, message=FALSE, warning=FALSE,  fig.align='center', cache = FALSE, tidy.opts=list(width.cutoff=60), fig.pos = 'H' )
+
+library(magick)
+library(pander)
+library(kableExtra)
+options(knitr.kable.NA = '-')
+
+table_format = if(knitr::is_latex_output()) {
+  "latex"
+} else {
+  "html"
+}
+
+
+```
+\pagenumbering{roman}
+\setcounter{page}{5}
+
+\clearpage 
+\pagebreak
+
+\vspace*{4.5cm}
+
+ \begin{center} \textbf{\large{Abstract}} \end{center}
+
+\begin{doublespacing}
+
+\textbf{Introduction}: Screening of individual samples is a common strategy to determine the population prevalence in many public health programs. Although, a pooled sample examination strategy has been explored as  cost-saving alternative to the current practice, it is not clear whether  it provides accurate estimates of the true underlying population prevalence. The aim is to compare and apply methods to estimate the STHs true underlying prevalence ($\pi$) when individual/pooled samples are used with imperfect diagnostic techniques with simulated and real data, using Soil-Transmitted Helminthiasis (STHs) as a case study; the STHs considered are \emph{Ascaris}, \emph{hookworms}, and \emph{Trichuris}.
+
+\textbf{Methods}: Four estimator for the STHs prevalence, the Rogan-Gladen estimator for Individual samples (BRGI), the Rogan-Gladen estimator for Pooled samples (BRGP) and two  Method of moment (MoM) estimators (for Pooled or Individual samples), will be compared using classic performance measures (such as bias, MSE, coverage) under different scenarios. We explored the bias for different scenarios of prevalence using a  linear regression for bias based on all the scenarios parameters. 
+
+\textbf{Results}: In the simulation study, the BRGE methods outperform the MoM estimators, producing lower bias, and achieving an estimated coverage probability close to the chosen nominal values. A higher true prevalence produces overestimation for MoM and underestimation for BRGE. Increase of number of \emph{days} and \emph{slides} always produces overestimation in all family models. Pooling samples produce overestimation in MoM but underestimation in BRGE. Pooled BRGE tends to underestimate true prevalence compared to individual BRGE. The bias for the four models are 0.083 (MoM Pooled), 0.059 (MoM Individual),-0.004 (BRGP), 0.0008 (BRGI). In the Ethiopia survey, the estimated STHs prevalence was \emph{Ascaris} 1.74\%, \emph{hookworms}  0.59\%, and \emph{Trichuris} 4.3\%.
+
+\textbf{Conclusion}: Individual BRGE is the model that provides the best performance in all explored scenarios, however pooled BRGE offers a very similar performance. In the Ethiopia survey, Mass Drug Administration of the Antiparasitic (MDA) treatment is recommended for \emph{Ascaris}, and \emph{hookworms}, and not recommended for \emph{Trichuris}. 
+
+\textbf{Keywords}: Soil-transmitted helminthiasis, Bayesian Methods, Method of moment.
+
+\end{doublespacing}
+
+\setcounter{page}{1}
+
+\clearpage 
+\pagebreak
+
+
+
+\vspace*{6 cm}
+
+\begin{center} \textbf{\large{Acknowledgements}} \end{center}
+
+\begin{doublespacing}
+
+This endeavour would not have been possible without the support of my Tutors Prof. Dr. Bruno Levecke and Dr. Oswaldo Gressani, many thanks for their invaluable patience and feedback. 
+
+Lastly, I could not have undertaken this journey without my family's support, especially my parents, Beatriz and Felipe, brother John and sister Catherine. All of you helped me and provided support and motivation to succeed in all my endeavours.
+
+
+\end{doublespacing}
+
+\setcounter{page}{2}
+
+\clearpage 
+\pagebreak
+
+
+
+\setcounter{tocdepth}{5}
+\tableofcontents
+
+\pagenumbering{roman}
+\setcounter{page}{3}
+\clearpage 
+\pagebreak
+
+
+\let\oldnumberline\numberline\renewcommand{\numberline}{\tablename~\oldnumberline}\listoftables
+\setcounter{page}{4}
+\clearpage 
+\pagebreak
+
+
+
+
+
+
+```{r, eval=F, include=F}
+lista<-data.frame(Abreviation=c("MDA","EPG","STHs","WHO","KK","FEC","MoM","RGE","BRGE","AP"), 
+Definition=c("Mass Drug Administration of the Antiparasitic","Eggs Per Gram of faeces","Soil-Transmitted Helminths","World Health Organization","Kato-Katz","Faecal Egg Counts","Method of moment","Rogan-Gladen estimator","Bayesian Rogan-Gladen estimator","Apparent Prevalence"))
+
+if(knitr::is_latex_output()) {
+lista %>% kableExtra::kable( booktabs = T )%>%kableExtra::kable_styling(latex_options = c("striped","HOLD_position"))
+
+} else if (!knitr::is_latex_output() ) {
+  lista %>% flextable::flextable()%>%autofit()
+}
+
+```
+
+
+
+
+
+
+
+\pagenumbering{arabic} 
+
+# Introduction
+
+## Biological background and motivation
+
+
+Soil-transmitted helminthiasis is a disease caused by infections with \acr{STHs}, which are the most common parasitic infections worldwide [@silverGeographicalDistributionSoil2018] with high prevalence rates in many regions. According to @paho/whoSoilTransmittedHelminthiasis approximately 1.5 billion people are infected with \acr{STHs} worldwide. 
+The most common \acr{STHs} that infect a large part of the world's population are: the giant roundworm (*Ascaris lumbricoides*), the whipworm (*Trichuris trichiura*), and the *hookworms* (*Ancylostoma duodenale* and *Necator americanus*) [@cdcSoilTransmittedHelminths2022]. The most common symptoms [@nathEliminationSoiltransmittedHelminthiasis2018] of \acr{STHs} infestation are diarrhea (49.1%), abdominal pain (30.8%), body weakness (27.9%) and abdominal distention (23.1%). 
+
+The main strategy to control the \acr{STHs} morbidity [@paho/whoSoilTransmittedHelminthiasis] is \acr{MDA} to the entire population at risk (e.g. pre-school age children and school-age children, and women of childbearing age). However, the \acr{MDA} programs require a screening monitoring system to adjust the strategy implemented. A reassessment of the \acr{STHs} population prevalence needs to be conducted using cost-effective screening procedures to decide on a proper intervention strategy.
+
+The mainly used screening procedure for the \acr{STHs} is the \acr{KK} technique. This diagnostic procedure (qualitative and quantitative) is recommended by the \acr{WHO} [@katzSimpleDeviceQuantitative1972] for quantifying \acr{STHs}. The \acr{KK} test involves identifying and counting the number of eggs in a sieved stool (on a slide) via microscopy [@dunnIncreasedSensitivityQPCR2020]. The egg detected per \acr{KK} slide (41.7 mg of faeces) is then multiplied by 24 to give a standard measure of \acr{EPG} of stool [@dunnIncreasedSensitivityQPCR2020]. 
+
+The \acr{EPG} could be considered as a surrogate for worm burden and finally for \acr{STHs} and finally for the infection intensity. The \acr{WHO} defines \acr{EPG} thresholds to group the infection intensity in a person into low, moderate and heavy [@paho/whoSoilTransmittedHelminthiasis]. 
+
+The frequency of \acr{MDA} will depend on the prevalence measured [@worldhealthorganization2030TargetsSoiltransmitted2020]. The \acr{STHs} prevalence, defined as the number of cases divided by the number of tested individuals, can be reported as observed (or naive) prevalence where no estimators are used. The estimated prevalence estimators ($\hat \pi$) usually can improve the observed or \acr{AP}, since they can account for measurement and sampling error. For a low prevalence (lower than 20\%), no preventive \acr{MDA}, for medium prevalence (greater than or equal to 20\% and  less than 50\%) preventive \acr{MDA} once a year, and for high prevalence (greater than or equal to 50\%$) preventive \acr{MDA} twice a year [@worldhealthorganization2030TargetsSoiltransmitted2020]. A \acr{STHs} prevalence of 2% (or less) has been proposed as a program decision threshold for stopping \acr{MDA} [@truscottIdentifyingOptimalThreshold2017].
+
+The \acr{KK} technique is inexpensive, easy to prepare and implement in field (only required little equipment without reliable electricity) [@bergquistDiagnosticDilemmasHelminthology2009; @dunnIncreasedSensitivityQPCR2020; @speichComparativeCostAssessment2010], however the laboratory work could be labour intensive and requires expertise in microscopy [@turnerEconomicConsiderationsMoving2017]. A way to achieve reliable and affordable diagnostic strategy using the \acr{KK} technique [@kureComparisonIndividualPooled2015; @mekonnenComparisonIndividualPooled2013] is using a pooled sample examination strategy. The total screening time in the laboratory is reduced by 70% when pools of 5 are used instead of individual stool samples [@kureComparisonIndividualPooled2015]. Since the prevalence of \acr{STHs} must be evaluated periodically in all affected regions, it is essential to achieve accessible, fast and accurate methods for \acr{STHs} diagnosis.
+
+Several studies have compared individual and pooled samples strategies for the detection and quantification of \acr{STHs} infections [@letaComparisonIndividualPooled2018; @kureComparisonIndividualPooled2015;@mekonnenComparisonIndividualPooled2013]. The common finding between all studies was a correlation between individual and pooled samples in \acr{EPG} of \acr{STHs}. However, only a significant correlation was observed between *A. lumbricoides, and T. trichiura*, regardless of the pool size [@mekonnenComparisonIndividualPooled2013]. However, no significant correlation was found for *hookworms* [@mekonnenComparisonIndividualPooled2013]. Additionally, the prevalence estimation using pooled stool samples offers a rapid assessment of the infection intensity for \acr{STHs}, reducing the time to prepare and read*slides* by 72.8% [@letaComparisonIndividualPooled2018]; however, it is not a major cost-saving strategy [@letaComparisonIndividualPooled2018].
+
+Sample pooling can result in dilution effect. Dilution effect describes the phenomenon in which samples from negative individuals dilute the contributions from positive individuals to such a degree that a pooled sample is incorrectly classified, i.e. a false negative test result. This can reduce classification accuracy and lead to bias in parameter estimates and inaccurate inference [@selfCapturingPoolDilution2022a].
+
+The \acr{SE} of the \acr{KK} test decreases in low prevalence and low intensity settings 
+[@dunnIncreasedSensitivityQPCR2020; @leveckeComparisonSensitivityFecal2011; @nikolaySensitivityDiagnosticTests2014]. However, the most common way to calculate prevalence using \acr{KK} test is using only the binary result (positive or negative test result), ignoring the underlying \acr{STHs}  infection intensity [@leveckeMathematicalInferenceHelminth2015]; the infection intensity \acr{STHs} can explain partially the variation in \acr{SE} of diagnostic tests [@leveckeMathematicalInferenceHelminth2015]. The \acr{SE} of \acr{KK} is 74–95% for the three \acr{STHs} species at high infection intensity, however \acr{SE} dropped to 53–80% in low-intensity settings [@nikolaySensitivityDiagnosticTests2014]. 
+
+The variation in \acr{EPG} \acr{STHs} is mainly due to biological factors (heterogeneous distribution of \acr{FEC} both within and between populations, day-to-day variation in egg excretion, and a heterogeneous distribution in stool), whereas the variation in the egg counting procedure is due to technical factors (variation in \acr{FEC} between diagnostic techniques and laboratory technicians) [@leveckeMathematicalInferenceHelminth2015].
+
+To implement an effective policy process for \acr{STHs} elimination, it is required to plan periodic evaluation and robust \acr{STHs} prevalence estimation, to improve the \acr{MDA} decision-making process. This motivates using the best \acr{STHs} prevalence estimators, which can account for all possible \acr{EPG} variability sources and/or adjust possibles bias estimation. The next chapter presents a revision of different ways to model \acr{STHs} prevalence accounting for \acr{EPG} variability and possible bias sources. 
+
+## Aims
+
+The aims of the study are presented below:
+
+1) Perform a simulation study to explore the potency of the methodology 
+described by @leveckeMathematicalInferenceHelminth2015 in estimating true underlying prevalence when pooled samples are examined with imperfect techniques. 
+
+2) To estimate the \acr{STHs} true prevalence based on individual stool samples, assuming a perfect \acr{SP}, being informed by a binary result of the \acr{KK} test, and/or number of eggs (proxy for the infection intensity ). 
+
+3) To estimate the \acr{STHs} true prevalence based on 10-pooled stool samples, assuming a perfect \acr{SP}, being informed by a binary result of the \acr{KK} test, and/or the infection intensity.
+
+4) Apply and compare the different methodologies to estimate prevalence when pooled samples are examined with imperfect diagnostic techniques on available data. 
+
+
+# Backgrounds
+
+## Mathematical models
+ 
+The \acr{KK} test is well known for having a reduced \acr{SE} (53–80%) for the three \acr{STHs} in low transmission settings [@nikolaySensitivityDiagnosticTests2014], compared to the \acr{SE} (74–95%) in high transmission settings. This is the main motivation to avoid to use prevalence estimator that does not assume an \acr{IGS}. In scenarios where the \acr{IGS} test is the most logical assumption, the estimators need to consider sampling error and misclassification error [@lewisTutorialEstimatingPrevalence2012a]. 
+
+The prevalence estimation ($\hat \pi$) based on pooled samples under the \acr{IGS} test assumption, has been explored using different methods such as likelihood-based approaches, Bayesian approaches [@enoeEstimationSensitivitySpecificity2000; @huiEvaluationDiagnosticTests1998; @speybroeckMisclassificationErrorsPrevalence2013a] and Expectation Maximization methods [@lewisTutorialEstimatingPrevalence2012a]. The majority of such approaches use binary input results only, ignoring the infection intensity. Using the infection intensity can help to explain the variation in \acr{SE} of diagnostic techniques between \acr{STHs} species, individuals and populations [@leveckeComparisonSensitivityFecal2011]. A few Bayesian models use the infection intensity as additional information to estimate \acr{STHs} prevalence [@barenboldEstimatingTruePrevalence2021; @barenboldTranslatingPreventiveChemotherapy2018].
+
+The two main methods of estimate prevalence are used and compared in the simulation study. These are (a) the classical \acr{RGE} which only use binary test results but prior information about the test, but does not use the Infection Intensity and (b) the other is the \acr{MoM} which uses the infection intensity. Both methods can be applied in the context of individual and pooled samples.
+
+### Method of Moments estimator: individual samples 
+
+The \acr{MoM} estimator for individual/pooled samples was developed by @leveckeMathematicalInferenceHelminth2015, such methodology uses the infection intensity to compute the \acr{STHs} prevalence, based on the following assumptions:
+
+1) the number of eggs observed by microscopy follows a Poisson distribution [@morganEffectsAggregationSample2005; @torgersonContributionSimpleRandom2012a]
+
+2) the true \acr{FEC} expressed in \acr{EPG} for an individual $i$ follows a Negative binomial distribution
+ 
+The \acr{FEC} per gram of stool, expressed in \acr{EPG}, presents a skewed distribution, usually modelled by a negative binomial distribution.
+
+The hierarchical assumption (for building the \acr{MoM} estimator) of the \acr{FEC} generation is presented below 
+
+
+\begin{equation} \label{eq:1}
+\begin{aligned}[t]
+FEC:= X_{ij} \sim NB(\mu_j,k_j), \\
+Z_{ij}\mid X_{ij}\sim Poiss(\lambda_{ij}), \\
+Z_{ij}\mid X_{ij}\sim Poiss (f_j\cdot X_{ij} ), \\
+\text{Observed FEC:} Y_{ij}= \frac{Z_{ij}}{f_j}.
+\end{aligned}
+\end{equation}
+
+where, 	$k_j$ is the true aggregation of $FEC$ in a population $j$ prior to an intervention, 	$f_j$ is the amount of stool examined (in g), 	$X_{ij}$ is the true \acr{FEC} expressed in \acr{EPG} for an individual $i$, $Z_{ij}$ is the number of egg counts under the microscope, and $\lambda_{ij}$ as the true underlying number of eggs in $f_j$ grams of stool.
+
+Using the previous assumptions, a \acr{MoM} has been implemented [@leveckeMathematicalInferenceHelminth2015] to estimate the prevalence \acr{STHs} in individual samples ($\hat \pi_{j}^{MoM\,ind}$)
+
+\begin{flalign} \label{eq:2}
+\hat \pi_{j}^{MoM\,ind}& =1- P(X_{ij}=0)\\
+& = 1-\left(\frac{\Gamma(x+k_j)}{\Gamma(k_j)\cdot x!} \right)^{k_j} \left( \frac{k_j}{k_j+\mu_j}\right)^x \\
+& = 1- \left(\frac{k_j}{k_j+\mu_j}\right)^{k_j}.
+\end{flalign}
+
+\begin{equation} \label{eq:3}
+\begin{aligned}[t]
+\text{where } k_j= \bar Y_{.j}/(Var[Y_{ij}]/\bar Y_{.j}-1/f_j-1).
+\end{aligned}
+\end{equation}
+
+An important element to stress is that the negative binomial distribution can be viewed as a Poisson distribution where the Poisson parameter is itself a random variable, distributed according to a Gamma distribution, i.e. the negative binomial distribution is derived from a Poisson-gamma mixture distribution [@agrestiCategoricalDataAnalysis2003; @hardinGeneralizedLinearModels2007; @hilbeNegativeBinomialRegression2011]; this assures us, in theory, that there is some similarity between \acr{MoM} and the data simulation process, with the caveat that is not a Bayesian model.
+
+
+```{r}
+#**Equation \ref{eq:3} can be derivative from ...........**
+#**Equation \ref{eq:3} can be derivative from ...........**
+#**Equation \ref{eq:3} can be derivative from ...........**
+#**Equation \ref{eq:3} can be derivative from ...........**
+
+```
+
+
+
+### Method of Moments estimator: pooled samples
+
+
+Similar assumptions are used for \acr{MoM} \acr{STHs} prevalence estimator for pooled samples ($\hat \pi_{j}^{MoM\,pool}$) [@leveckeMathematicalInferenceHelminth2015], than the ones used for the individual samples \acr{MoM}, however, now the hierarchical formulation of the assumptions are expressed at the pool level below 
+
+\begin{equation} \label{eq:4}
+\begin{aligned}[t]
+FEC=X_{ij}\sim NB(\mu_j,k_j), \\
+V_{lj}=\frac{\sum_{i=1\ }^{m_j}X_{ij}}{m_j}, \\
+Z_{lj}\mid V_{lj}\sim Poiss (\lambda_{lj} ), \\
+Z_{lj}\mid V_{lj}\sim Poiss(f_j{\cdot V}_{lj}), \\
+\text{Observed FEC: } U_{lj}= \frac{Z_{lj}}{f_j}. 
+\end{aligned}
+\end{equation}
+
+where $f_j$ is the amount of stool examined (in g), $X_{ij}$ is the true \acr{FEC} expressed in \acr{EPG} for an individual $i$,$Z_{lj}$ egg counts under the microscope, $\lambda_{lj}$ is the true underlying number of eggs in $f_j$ grams of stool,	$V_{lj}$ true \acr{FEC} (in \acr{EPG}) in a pooled stool sample from a population.
+
+
+
+
+\begin{flalign}\label{eq:5}
+\hat \pi_{j}^{MoM\,pool} & =1- P(X_{ij}=0)\\
+& = 1-\left(\frac{\Gamma(x+s_j)}{\Gamma(s_j)\cdot x!} \right)^{s_j} \cdot \left( \frac{s_j}{s_j+\mu_j}\right)^x \\
+& = 1- \left(\frac{s_j}{s_j+\mu_j}\right)^{s_j}, 
+\end{flalign}
+
+
+\begin{equation} \label{eq:6}
+\begin{aligned}[t]
+\text{where } s_j= \bar U_{.j}/(\eta \cdot(Var[U_{ij}]/\bar U_{.j}-1/f_j-1))
+\end{aligned}
+\end{equation}
+
+and $s_j$ is the pooled version of previously defined $k_j$ (\acr{MoM} individual), which acknowledge the pool size ($\eta=10$) as part of the aggregation parameter. 
+
+### Rogan-Gladen estimator: individual samples
+
+The most popular method to estimate prevalence in \acr{IGS} is the \acr{RGE}, which considers the \acr{AP} (binary output, ignoring the infection intensity), but also the accuracy (\acr{SE} and \acr{SP}) of the test [@roganEstimatingPrevalenceResults1978]; in case that the accuracy of the test is perfect the \acr{RGE} prevalence estimation is the same as the \acr{AP}.
+
+\begin{table}[!ht]
+    \centering
+    \caption{Two-by-Two contingency table when testing n subjects for disease with KK test (IGS). When a test is positive then TestR=1, else TestR=0. A STHs infected subject is counted as D=1, else D=0.}
+    \begin{tabular}{l l|l l|l}
+    \toprule
+        ~ & ~ & \multicolumn{2}{c|}{Disease}   & Observed \\
+    \midrule
+        ~ & ~ & 1 & 0 & ~ \\
+    \midrule
+        \multirow{2}{*}{TestR} & 1 & $\pi \cdot SE$ & $(1-\pi) \cdot (1-SP)$ & $n^+$ \\ 
+         & 0 & $pi \cdot (1-SE)$ & $(1-\pi) \cdot SP$ & $n^-$ \\ 
+    \midrule
+        Total ~ & ~ & $\pi$ & $1-\pi$ & $n$ \\ 
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
+On Table 1, a contingency table is presented when KK is assumed to be \acr{IGS}, where $n^+ (n^-)$ is the observed number of subjects with a positive (negative), and  the $AP = n^+/n$. Based on such table, the AP can be expressed as
+
+\begin{equation} \label{eq:7_0}
+\begin{aligned}[t]
+AP= \frac{\pi \cdot SE+(1-\pi)\cdot(1-SP)}{\pi+1-\pi}=\pi \cdot SE+(1-\pi)\cdot(1-SP) \\
+\end{aligned}
+\end{equation}
+
+hence, the frequentist \acr{RGE} estimator ($\hat\pi^{FRG}$) is given by
+
+\begin{equation} \label{eq:7}
+\begin{aligned}[t]
+\hat\pi^{FRG}= \frac{AP+SP-1}{SE+SP-1},
+\end{aligned}
+\end{equation}
+
+where $SE= (TestR=1\mid D=1)=TP/(TP+FN)$ (also called true positive rate, where TP is the number of true positive cases, and FN is the number of false negative cases) and $SP= P(TestR=1\mid D=1)=TN/(TN+FP)$ (also called true negative rate, TN is the number of true negatives, and FP the number of False positives).  Assuming that the TestR for each subject follows a Bernoulli distribution ($TestR_i \sim Bern(AP)$) the equation \ref{eq:7} can be used to derivative the probability to observe positive cases given the prevalence ($p(n^{+},n\mid p)$) as follows
+
+\begin{flalign}\label{eq:8}
+p(n^{+},n\mid p) & = P(observe~n^{+}~out~of~n\mid p) \\
+& = \binom{n}{k} \cdot (SE + \pi \cdot (1 - SP)\cdot (1 - \pi) )^{n^{+}} \cdot ( 1 - SE\cdot \pi(1 - SP)\cdot (1 - \pi) )^{n-1}, 
+\end{flalign}
+
+The frequentist \acr{RGE} is an over-parametrized model with three parameters ($\pi$, $SE$, $SP$) but only one piece of information provided by the data (\acr{AP}); "as such, this model is only of practical use within a Bayesian context” [@lewisTutorialEstimatingPrevalence2012a]. The \acr{BRGE} improves the previous estimator because updates the prior information ($SE$, $SP$, and $\pi$) with the current new data (\acr{AP}) to provide an estimation of the prevalence ($\hat \pi$) without over-parametrization or the need of limiting assumptions. The use of prior information solves the over-parametrization issue.
+
+The mathematical formulation of the \acr{BRGE} can be expressed (see equation \ref{eq:9_2a}) as the posterior distribution [@lesaffreBayesianBiostatistics2012] (pp. 124-125), which is a product of the prior and the likelihood:
+
+\begin{flalign}\label{eq:9_2a}
+p(\pi,SE,SP \mid n^+,n^- ) & \propto \binom{n}{n^+}\cdot [\pi \cdot SE+(1-\pi)\cdot(1-SP)]^{n^+} \\ & \ \ \ [\pi\cdot(1-SE)+(1-\pi)\cdot SP]^{n^-}\cdot p(\pi)\cdot p(SE)\cdot p(SP),
+\end{flalign}
+
+where $i=1, \ldots, N$ is the subject id; $p(\pi)$, $p(SE)$, and $p(SP)$ are the prior distribution for $\pi$, $SE$, and $SP$, respectively; such priors are assumed to follow a non-informative Beta distributions ($B$), $p(SE) \sim B(1,1);p(SP)\sim B(1,1);p(\pi) \sim B(1,1)$, and the $\widehat {SE}, \widehat {SP}, \hat \pi$ are all the parameters to be estimated using \acr{MCMC}. Alternatively, if $p(SE)$ and $p(SP)$ are considered nuisance parameters, then a more informative distribution based on previous studies can be assumed.
+
+The \acr{BRGI} can be implemented using the function *truePrev* in the package *prevalence* [@devleesschauwerPrevalenceToolsPrevalence2022].
+
+```{r}
+#\begin{equation} \label{eq:9}
+#\begin{aligned}[t]
+#TestR_i \sim Bern(AP_i) \\
+#AP_i=Se \cdot \pi_i+(1-\pi_i)\cdot (1-Sp) 
+#\end{aligned}
+#\end{equation}
+
+
+```
+
+### Rogan-Gladen estimator: pooled samples
+
+Historically, in the area of animal-production sector, there is a need
+to estimate the prevalence of an infection at the group level [@eversEstimationAnimallevelPrevalence2001]. This has given rise to a series of statistical models [@abelEstimatingPrevalenceInfectious1999; @eversEstimationAnimallevelPrevalence2001; @sacksPrevalenceEstimationPooled1989; @warasiGroupTestingPackageGroup2021; @warasiOptimizingPooledTesting2022; @williamsEstimationPathogenPrevalence2005] that estimate the prevalence in such context. Although prevalence at the animal (subject) level gives more precise information on infection status, it is more costly.
+
+
+The selected \acr{BRGE} model [@boelaertPrevalenceParatuberculosisJohne2000a; @speybroeckEstimatingPrevalenceInfections2012a;@devleesschauwerPrevalenceToolsPrevalence2022], the prevalence estimator included a parametrization between $SPpool$ and $SEpool$ and $SE$, $SP$. The model \acr{BRGE} for pool samples equations are 
+
+
+\begin{equation} \label{eq:10}
+\begin{aligned}[t]
+TestR \sim Bern(AP), \\
+AP=SEpool \cdot (1-(1- \pi)^{\eta}+(1-SPpool)\cdot (1-\pi)^{n_i}, \\
+SEpool= 1 - ((1 - SE^{\eta \cdot\pi})*(SP^{\eta\cdot (1 - \pi)})), \\
+SPpool= SP^{\eta}, 
+\end{aligned}
+\end{equation}
+```{r}
+#where $i=1, \ldots, 10$ are the pool id (since each school #always has 100 subjects, and the pool size is always 10); 
+```
+where $\eta$ is the size of the pool, $p(\pi)$, $p(SE)$, and $p(SP)$ are the prior distribution for $\pi$, $SE$, and $SP$, respectively; such priors are assumed to follow a non-informative Beta distribution ($B$), $p(SE) \sim B(1,1);p(SP)\sim B(1,1);p(\pi) \sim B(1,1)$, and the $\widehat {SEpool}, \widehat {SPpool}, \hat \pi$ are all the parameters to be estimated using \acr{MCMC}.
+
+
+Finally, the mathematical formulation of the \acr{BRGE} for pool samples is expressed below 
+\begin{flalign}\label{eq:10_2}
+p(\pi,SEpool,SPpoll \mid n^+,n^- ) & \propto \binom{n}{n^+}\cdot [\pi \cdot SEpool+(1-\pi)\cdot(1-SPpool)]^{n^+} \\ & \ \ \ \cdot[\pi\cdot(1-SEpool)+(1-\pi)\cdot SPpool]^{n^-}\cdot p(\pi)\cdot p(SEpool)\cdot p(SPpool)
+\end{flalign}
+
+
+The \acr{BRGP} can be implemented using the function *truePrevPools* in the package *prevalence* [@devleesschauwerPrevalenceToolsPrevalence2022].
+
+## Data Generating Mechanism 
+
+The \acr{DGM} used for the simulation study is based on the exploration of specific parameters that hypothetically could affect the performance of the estimator, such as:
+
+1) the number of tested schools ($n_{schools} \in [10,20]$).
+
+2) the number of *days* where the test was conducted ($n_{days}  \in [1,2]$).
+
+3) the number of *slides* collected for each day  ($n_{slides}  \in [1,2]$).
+
+4) the true \acr{STHs} prevalence for each population or simulated data ($\pi_j  \in [0.01,0.03]$).
+
+
+The combination of all possible parameter values will give a total of 16 scenarios (see Table \ref{tab:TabDGM}, and Figure \ref{fig:FigDGM}), or 8 scenarios for each prevalence group (0.01,0.03). The selection of the parameters (*days*, *slides*, tested *schools*) is based on common choices when \acr{KK} tests are conducted in the field, and the prevalence selection of two prevalence values around the common prevalence threshold used to apply \acr{MDA} in a population ($2\%$). The motivation to increase the number of collected samples is a way to cope with the natural day-to-day variation in egg excretion; hence more stool examined more likely to pick up at least one egg. 
+
+The parameters that are considered fixed (see Table \ref{tab:TabDGM}) are population mean egg intensity ($\mu=1000$), number of subjects in each pooled sample ($\eta=10$), number of subjects for each school ($n.s=100$) and all the \acr{CV} Gamma distribution parameters ($CV_i=1.5,\ CV_d^1=0.75, \ CV_d^{10}=0.6,\ CV_s=0.25$); \acr{CV} parameters are based on a previous simulation study [@coffengSurveyDesignMonitor2021]; such values can be assumed reasonable for *Ascaris* \acr{STHs} average values. The total number of subjects ($N$) is the product of the number of subjects per *school* and the number of *schools* for each scenario ($N=n.s\cdot Schools$). The scenario number ($1 \ldots 16$) will be used in the following sections to summarize the parameter settings for each scenario. 
+
+### Performance measures estimators
+
+The most important performance measure in a simulation study is the bias, which quantifies whether the estimator targets the true value prevalence ($\pi$) on average. Bias is estimated as
+
+$$Bias=\frac{1}{n_{sim}} \sum _{i=1}^{n_{sim}} (\hat \pi_i -\pi).$$
+ 
+The \acr{MCSE} of bias provides a measure of the certainty for the bias estimation related to the number of simulations, and it is estimated as:
+
+$$ MCSE(Bias)=\sqrt{\frac{\frac{1}{n_{sim}}\sum _{n=1}^{n_{sim}}(\hat \pi_i-\bar \pi)^2} {n_{sim}} }.$$
+
+A identical \acr{MCSE} estimators was used for the other the performance measures. 
+
+The \acr{MSE} method provided information about precision and accuracy, which is the sum of the squared bias and variance of $\hat \pi$:
+
+$MSE = \frac{1}{n_{sim}}\sum_{i=1}^{n_{sim}} (\hat \pi_i-\pi)^2$
+
+Coverage (\acr{CP90} or \acr{CP95}) is another key property of an estimator, which reflects the probability that a \acr{CI} (or \acr{IC} for Bayesian models) contains the true value ($\pi$), and is estimated as
+
+$$\text{Coverage probability} =\frac{1}{n_{sim}} \sum _{i=1} ^{n_{sim}} I(\hat \pi_{i,low} \leq \pi \leq \pi_{i,upp}),$$
+
+where $I$ is the indicator function, and $n_{sim}=100$ in the context of this study. 
+
+
+
+```{r c1}
+library(dplyr)
+#set.seed(2023)
+#gridd<-expand.grid(schools=c(10,20), prev.STH=c(0.01,0.03),var.STH=0.00001,pooln1=10, CV.i=1.5,mu=1000, CV.d=0.75,  pooln2=25, CV.d.10=0.6,CV.d.25=0.5, CV.s=0.25, plotss=FALSE, TPR=0.88*0.88,TNR=0.97*0.97, n.s=100, n.days=c(1,2, 3), n.slide=c(1,2,3), misclasifica=FALSE)
+rm(list=ls())
+gridd<-expand.grid(prev.STH=c(0.01,0.03),schools=c(10,20),n.days=c(1,2 ), n.slide=c(1,2 ),pooln1=10, CV.i=1.5,mu=1000, CV.d=0.75,  pooln2=25, CV.d.10=0.6,CV.d.25=0.5, CV.s=0.25, plotss=FALSE, TPR=0.88*0.88,TNR=0.97*0.97, n.s=100, misclasifica=FALSE)
+
+gridd$nnn=gridd$schools*gridd$n.s
+
+gridd$dataset<-1:nrow(gridd)
+
+gridd$name<-paste0("Dataset: ", gridd$dataset,"Shools: ",gridd$schools,". STH Prev:",gridd$prev.STH,". Days:",gridd$n.days,". Slides:",gridd$n.slide)
+gridd$daysXsample<-gridd$n.days*gridd$n.slide
+gridd<-gridd[order(gridd$daysXsample),]
+
+gridd<-gridd[order(gridd$prev.STH,gridd$schools,gridd$n.days,gridd$n.slide),]
+
+gridd$scenario<-gridd$Scenario<-1:nrow(gridd)
+
+
+gridd$Info_level<-ifelse(gridd$daysXsample==1,"Low",ifelse(gridd$daysXsample==2,"Low Medium",ifelse(gridd$daysXsample==3,"Medium",ifelse(gridd$daysXsample==4,"Medium High",ifelse(gridd$daysXsample==6,"High", ifelse(gridd$daysXsample==9,"Very High",NA))))))
+#library(openxlsx)
+#openxlsx::write.xlsx(gridd, "gridd.xlsx")
+#gridd<-openxlsx::read.xlsx("C:\\Users\\32498\\Downloads\\gridd.xlsx")
+#gridd<-gridd[gridd$Decission=="keep",]
+grid.sim<-vector(mode='list', length=nrow(gridd))
+for (ji in 1:nrow(gridd)) {
+grid.sim[[ji]]<-gridd[ji,]
+}
+library(dplyr)
+library(tidyverse)
+library(Hmisc)
+library(vcd)
+library(VGAM)
+reps=1:100
+
+gridd.print<-subset(gridd,select = -c(plotss,TPR,TNR, misclasifica,dataset,scenario,Info_level, pooln2))
+#colnames(gridd.print)%>%clipr::write_clip()
+#
+```
+
+
+```{r TabDGM}
+
+gridd.print<-subset(gridd,select =c(Scenario,prev.STH,schools, n.days,n.slide, mu,pooln1,CV.i,CV.d,CV.d.10,CV.s,n.s,nnn))
+
+#colnames(gridd.print)%>%clipr::write_clip()
+colnames(gridd.print)<-c("Scenario",
+                           "$\\pi_{schools}$",
+                           "$n_{schools}$",
+                           "$n_{days}$",
+                           "$n_{slides}$",
+                           "$\\mu$",                           
+                           "$\\eta$",
+                           "$CV_i$",
+                           "$CV_d^{1}$",
+                           "$CV_d^{10}$",
+                           "$CV_s$",
+                           "n.s",
+                           "N")
+ 
+
+library(flextable)
+
+if(knitr::is_latex_output()) {
+gridd.print%>%kableExtra::kable(row.names = FALSE,caption = "Considered scenarios as data generating mechanism for the simulation study.", escape = F)%>% kableExtra::add_header_above(c("Scenarios" = 5, "Assumptions" = 2, "Agregattion parameters" = 4, "Sample size" = 2))%>% kableExtra::kable_styling(font_size = 8, latex_options = c("striped","HOLD_position")) %>% kableExtra::add_footnote(escape = F, c("$\\pi_{schools}$: true Prevalence for each school, $n_{schools}$ is the number of schools; $n_{days}$ is the number of $days$ where test are conducted, $n_{slides}$ is the number $slides$ collected for each day; $\\mu$ is the population mean EPG, $\\eta$ is the the number of subjects for each pool; $CV_i$, $CV_d^{1}$, $CV_d^{10}$, $CV_s$ are the Coefficient of Variation related to subject, related to $days$ in each subject sample, related to $days$ in each pool sample, related to each slide, respectively; $n.s$ is the number of subjects per $schools$, and $N$ is the total number of subjects in the whole population."), threeparttable = TRUE, notation="none") 
+
+
+} else if (!knitr::is_latex_output() ) {
+gridd.print %>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Considered scenarios as data generating mechanism for the simulation study.")
+}
+
+#footnote(escape = F, general=c("$\\pi_{schools}$: true prevalence for each school, $schools$ is the number of schools, \n $n_{days}$ is the number of days where test are conducted, $n_{slides}$ is the number slides collected for each day, \n $\\mu$ is the population mean EPG, $pooln1$ is the the number of subjects for each pool,\n $CV_i$, $CV_d^{1}$, $CV_d^{10}$, $CV_s$ are the Coefficient of Variation for each subjetc, day for each subject sample, day for each pool sample, for each slide; \n $n.s$ is the number of subjects per schools, and $nnn$ is the total number of subjects in the whole population"))
+```
+
+The simulated data follows a hierarchical structure (see Figure \ref{fig:FigDGM}) to produce the number of \acr{EPG} observed at the subject or pool level. The $\pi_{school}$ (true prevalence population value) is a fixed value between all schools, which is used to produce the True infection status ($I_i$) for each subject in each school:$I_i\sim Bin(\pi_{school})$. The relationship between \acr{CV} and the aggregation parameter is $CV=1/k$. The assumption for the Mean egg intensity for each pool ($\mu_i^{10}$) is that the average of all Mean egg intensity for each subject
+($\mu_i^{10}=\frac{1}{10}\sum_{i=1}^{10}\mu_{\ i}^1$). The level I (Figure \ref{fig:FigDGM}) captures the variability between individuals, where $\mu_i$ is the Mean egg intensity for subject i, and $k_i^1$ is the aggregation factor in the Gamma distribution for each individual (and $k_{i}^{10}$ is the aggregation factor for the pool samples), both values are assumed to be equal to $\frac{1}{1.5}$. The level II and III (Figure \ref{fig:FigDGM}) reflect the day-to-day and slide-to-slide variability for each sample in a subject. Finally, the level IV (Figure \ref{fig:FigDGM}) model the \acr{EPG} counts due to random diagnostic variation in the \acr{KK} test. \acr{KK} test result (true/false) is the binarization of the $KK_{ids}$, when $KK_{ids}>0$ then \acr{KK}=TRUE, else \acr{KK}=FALSE.
+It is key to realize that the hierarchy structure used for the \acr{DGM} is compatible with the \acr{MoM} methods since the negative binomial distribution used in the \acr{MoM} can be considered equivalent to a Poisson distribution where the Poisson parameter is itself a random variable, distributed according to a Gamma distribution, which is the basic structure used for the \acr{DGM}. 
+
+
+# Methods
+
+
+## Simulation study
+
+
+\noindent In this section we evaluate the performance of the estimators using all the \acr{DGM} scenarios. The main focus is to evaluate the effect of different parameters under two prevalence settings on the performance measures, which is a key element to take \acr{MDA} decision in a clinical setting. 
+
+The simulation follows the ADEMP framework (\textbf{A}ims, \textbf{D}ata-generating mechanism, \textbf{E}stimands, \textbf{M}ethods, \textbf{P}erformance measure) proposed by @morrisUsingSimulationStudies2019. Such elements are presented below.
+
+1) **Aims**: To compare the performance of different estimation methods to obtain \acr{STHs} prevalence under the context of an \acr{IGS} test (\acr{KK} test).
+
+2) **Data-generating mechanism**: Sixteen (16) simulation mechanisms were set up varying population \acr{STHs} prevalence, number of *days* ($n_{days}$) where each school was tested, number of *slides* for each day ($n_{slides}$), and number of schools tested ($n_{schools}$).
+
+3) **Estimands**: The estimand of interest is \acr{STHs} Prevalence.
+\item \textbf{Methods}: The following methods were used: \acr{MoM} (Individual and pooled samples) [@leveckeMathematicalInferenceHelminth2015] and \acr{BRGE} (Individual and pooled samples) [@devleesschauwerPrevalenceToolsPrevalence2022]. The \acr{BRGE} methods were implemented using the package *prevalence* [@devleesschauwerPrevalenceToolsPrevalence2022] and the functions *truePrev* and *truePrevPools*; the \acr{MoM} was based on the @leveckeMathematicalInferenceHelminth2015 publication.
+
+
+4) **Performance measures**: We compared the performance of these methods using Bias, \acr{MSE}, Coverage Probability $90\%$ (CP90), and Coverage Probability $95\%$ (CP95).
+
+Each scenario was repeated enough times to provide model performance measures with enough precision and low enough \acr{MCSE} of bias. The \acr{MCSE} is related to the finiteness of the simulation and, hence, it is a measure of the precision of the estimates provided, which depends on the number of repetitions for each scenario (i.e. 100 in our study).
+
+Additionally, the model bias for all simulated \acr{DGM}s was modelled with different  linear regression models using the \acr{DGM} parameters, such as *model* type, number of *schools/days/slides*, and true prevalence. 
+
+A post-hoc analysis was conducted to estimated the probability to correctly classify and treat a population using \acr{MDA}. Based on the classification agreement between the true value of the prevalence ($\pi$) and the estimate prevalence ($\hat  \pi$), three type of situation can occur with the population based on the estimates, namely (a) \acr{CT}, (b) \acr{OT}, and (c) \acr{UT}.
+
+```{r FigDGM, fig.cap="Steps to produce the simulated data.", cache=F, fig.pos="H"}
+setwd("C:/Users/32498/Documents/Master EPI/SEM6/STH_THESIS_2023/ThesisSTH/")
+knitr::include_graphics("STH Thesis Infographic20AUG23 PT.pdf")
+```
+
+## Survey study
+
+
+Using the models evaluated in the simulation study, the prevalence of \acr{STHs} is estimated in a previously published large-scale survey [@letaComparisonIndividualPooled2018], examining individual and pooled samples of children. The nationwide cross-sectional survey was conducted in the North of Ethiopia, where the aim was to map the distribution of \acr{STHs}. From ten randomly selected schools (in each district), only five schools were purposively selected with a higher risk to have \acr{STHs}. Only 50 students (9 to 14 years) were randomly selected for each school. The number of students pooled in each sample was always 10 for all schools, only 1 day and 1 slide was collected for each student. 
+
+# Ethical thinking, societal relevance and stakeholder awareness
+
+For this study, there are no ethics issues since is based on simulated data or previously collected data [@letaComparisonIndividualPooled2018] from other study and on simulated data. 
+The stakeholders of the current investigation are the National/International  Health agencies, the \acr{WHO}, and the researchers interested in the  \acr{STHs} prevalence estimation. Such stakeholders would be able to have a reliable evaluation of the different \acr{STHs} prevalence estimators, hence they would be able to select the estimator(s) with the best performance. 
+
+Finally, if the stakeholders are informed by our analyses, we expect that they have additional evidence that support their selection of the best prevalence estimators and which type of sample procedure, that would allow a potential improvement on how the \acr{STHs} screening process would be conducted in the future. 
+
+
+```{r}
+
+#BGRI not recognized
+#FGS not recognize
+```
+
+
+
+
+
+```{r c2cambio, eval=F, include=F}
+#params=grid.sim
+start_time <- Sys.time()
+params=grid.sim;
+datatest<-vector(mode='list', length=length(params))
+simSTH <- function( params = list()) {
+
+for (ji in 1:length(params)) {
+
+  nnn=params[[ji]][["nnn"]]
+  schools=params[[ji]][["schools"]]
+  pool=params[[ji]][["pooln1"]]
+  prev.STH =params[[ji]][["prev.STH"]]
+  var.STH=params[[ji]][["var.STH"]]
+
+
+  n.s=nnn/schools  #subjects in each school
+  S.label<-1:schools
+  datatest[[ji]]$School.name<-rep(S.label,each=n.s)
+  datatest[[ji]]<-as.data.frame(datatest[[ji]])
+  #colnames(datatest[[ji]])<-"School.name"
+  datatest[[ji]]$n<-nrow(datatest[[ji]])
+
+  datatest[[ji]]$dataset<-params[[ji]][["dataset"]]
+  datatest[[ji]]$ind.n<-NA
+  datatest[[ji]]$ind.n<- rep(1:n.s,each=1, times=schools)
+
+  n.pool<-1:(n.s/pool)
+  datatest[[ji]]$pool10<-rep(n.pool,each=pool)
+
+  
+
+  datatest[[ji]]$prev<-params[[ji]][["prev.STH"]]
+ 
+  datatest[[ji]]$DX<-rbinom(n=nrow(datatest[[ji]]),size=1,prob= datatest[[ji]]$prev)
+ 
+
+  datatest[[ji]]<-datatest[[ji]]%>%group_by(School.name,ind.n) %>%dplyr::mutate(ID.sub = cur_group_id())
+
+  n.s=params[[ji]]$n.s
+  n.days=params[[ji]]$n.days
+  n.slide=params[[ji]]$n.slide
+  nnn=params[[ji]]$nnn
+  TPR=params[[ji]]$TPR
+  TNR=params[[ji]]$TNR
+  schools=params[[ji]]$schools
+  ####Check-up: n.s should be a multiple of ss1 and ss2 ()
+  ss1=n.s/params[[ji]]$pooln1 #Number of subsets for pool1
+  ss2=n.s/params[[ji]]$pooln2 #Number of subsets for pool2
+  if (!n.s%%ss1==0 & !n.s%%ss2==0 ) {
+    warning("Number of subjects in dataset should be a multiple of the numbers of the pooled samples (pooln1 and pooln2)")
+    stop()
+  }
+  if (!n.s%%ss1==0 ) {
+    warning("Number of subjects in each school should be a multiple of the numbers of the pooled samples (pooln1)")
+    stop()
+  }
+  if (!n.s%%ss2==0 ) {
+    warning("Number of subjects in each shool  should be a multiple of the numbers of the pooled samples (pooln2)")
+    stop()
+  }
+  ##  1 Variability in mean egg intensity between individuals, gamma dist, params$CV.i=1.5
+  # The DGM can explored a grid with different values of K (or params$CV.i)
+  #number of subjects
+  Ki=1/params[[ji]]$CV.i^2
+  datatest[[ji]]$Mu<- params[[ji]]$mu
+  datatest[[ji]]$CV.d<- params[[ji]]$CV.d
+
+
+  #replicating the datasets n.days times.
+  datatest[[ji]]<- map(seq_len(n.days),~datatest[[ji]]) %>% bind_rows(.id="day")
+  #datatest<-datatest.copy
+  datatest[[ji]]<-datatest[[ji]][order(datatest[[ji]]$School.name,datatest[[ji]]$ind.n,datatest[[ji]]$day),]
+  datatest[[ji]]$day<-as.numeric(datatest[[ji]]$day)
+
+  #replicating the datasets n.slide times.
+  datatest[[ji]]<- map(seq_len(n.slide),~datatest[[ji]]) %>% bind_rows(.id="sample")
+  datatest[[ji]]<-datatest[[ji]][order(datatest[[ji]]$School.name,datatest[[ji]]$ind.n,datatest[[ji]]$day,datatest[[ji]]$sample),]
+  datatest[[ji]]$sample<-as.numeric(datatest[[ji]]$sample)
+
+
+  # Mid: for the days
+  #nnn*n.days*n.slide
+
+  datatest[[ji]]$NegDX<-ifelse(datatest[[ji]]$DX==1,0,1)
+
+  prueb3<-datatest[[ji]]%>%group_by(School.name,day,sample) %>%  dplyr::summarise(across(DX, sum))
+  prueb4<-datatest[[ji]]%>%group_by(School.name,day,sample) %>%  dplyr::summarise(across(NegDX, sum))
+  colnames(prueb3)<-c("School.name","day","sample","Sick")
+  colnames(prueb4)<-c("School.name","day","sample","Healthy")
+  datatest[[ji]]<-merge(datatest[[ji]],prueb3,by = c("School.name","day","sample"))
+  datatest[[ji]]<-merge(datatest[[ji]],prueb4,by = c("School.name","day","sample"))
+  datatest[[ji]]$IDID<-1:nrow(datatest[[ji]])
+  min.inf=0  #to produced a shifted gamma
+
+  datatest[[ji]]<-datatest[[ji]][order(datatest[[ji]]$ID.sub,datatest[[ji]]$day,datatest[[ji]]$sample),]
+  datatest[[ji]]$Mi<-datatest[[ji]]$Mid1<-datatest[[ji]]$Mids1<-NA
+  for (ii in 1:(nnn)) {
+    #o#o#       ii=1
+    x.i = n.days * n.slide * (ii - 1) + 1 #BEGINING OF THE SUBJECT LINE
+    x.f = x.i + n.days * n.slide - 1 #END OF THE SUBJECT LINE
+
+    ###################### Shifted gamma using minimum infection: corresponding to the lowest possible infection with one worm pair. Barenbold (21) uses min_infect<-0.05.
+    ###################### Mean=shape*scale, shape=Mean/scale
+    datatest[[ji]]$Mi[datatest[[ji]]$ID.sub==ii] <- ifelse(
+      mean(datatest[[ji]]$DX[datatest[[ji]]$ID.sub==ii]) == 1,
+      rep(rgamma(1, shape = Ki, scale = (params[[ji]]$mu-min.inf)/Ki),
+          each = 1,
+          times = n.days * n.slide),
+      rep(0, each = 1, times = n.days * n.slide))
+    # datatest$Mi[x.i:x.f] <- rep(rgamma(1, shape = Ki, scale = (params$mu-min.inf)/Ki),each = 1,times = n.days * n.slide) Alternative to ZI-gamma > gamma
+    for (dd in 1:n.days) {
+      #o#o#             dd=2
+      x.d = x.i + n.slide * (dd - 1) #-1
+      #x.d.f = x.i + n.days * dd - 1
+      x.d.f = x.d + n.slide - 1
+      datatest[[ji]]$Mid1[x.d:x.d.f] = rep(
+        rgamma(1,shape = params[[ji]]$CV.d ^ -2,
+               scale = datatest[[ji]]$Mi[x.d:x.d.f] * params[[ji]]$CV.d ^ 2),
+        each = 1,times = n.slide)
+
+      for (ss in 1:n.slide) {
+        #o#o# ss=1
+        datatest[[ji]]$Mids1[x.d + ss - 1] = rgamma(1,shape = params[[ji]]$CV.d ^ -2,
+                                                    scale = datatest[[ji]]$Mid1[x.d + ss - 1] * params[[ji]]$CV.d ^ 2)
+      }
+    }
+  }
+
+  hey<-datatest[[ji]]%>%group_by(School.name,day,sample, pool10) %>%dplyr::mutate(ID = cur_group_id())
+  temp<-hey%>%group_by(ID)%>%dplyr::summarise(Mids10=mean(Mids1))
+  datatest[[ji]]<-merge(hey,temp, by="ID")
+
+  # Mids: for the samples
+  #It will be good to increase number of FN using a ZIP. Sen is now 95, it should be around 70%. DONE!
+  #Specificity is perfect, then we should include FP
+
+  mids.count.error<-0
+
+
+  # IF  misclasifca es TRUE then FP are artifically created, however is too hich with current parameters
+
+
+  if (params[[ji]][["misclasifica"]] ) {
+    datatest[[ji]] <-
+      datatest[[ji]] %>% mutate(TP.ideal = round(Sick * TPR),
+                                TN.ideal = round(Healthy * TNR))
+    datatest[[ji]] <-
+      datatest[[ji]] %>% mutate(FN.ideal = Sick - TP.ideal,
+                                FP.ideal = Healthy - TN.ideal)
+    datatest[[ji]] <-
+      datatest[[ji]] %>% mutate(sens.ideal = TP.ideal / Sick, spec.ideal = TN.ideal /
+                                  Healthy) #Only to check accuracy is ok
+    datatest[[ji]]$DX.Miss <- datatest[[ji]]$DX
+
+
+
+    for (SSS in 1:schools) {
+      # Choose the ID of the missclasified subjects for each shcool
+      subconj <- subset(datatest[[ji]], School.name == SSS)
+      suj.0.ID <- subconj$IDID[subconj$DX == 0] #All N (Negatives)
+      suj.1.ID <- subconj$IDID[subconj$DX == 1] #All P (Positives)
+      ind.FP <-
+        sample(suj.0.ID, subconj$FP.ideal[1], replace = FALSE) #Sample w/o replace FP-times
+      ind.FN <-
+        sample(suj.1.ID, subconj$FN.ideal[1], replace = FALSE) #Sample w/o replace FN-times
+      datatest[[ji]]$DX.Miss[datatest[[ji]]$IDID %in% ind.FP] <-
+        rep(1, each = 1, times = length(ind.FP)) #FP:0 is replaced with 1
+      datatest[[ji]]$DX.Miss[datatest[[ji]]$IDID %in% ind.FN] <-
+        rep(0, each = 1, times = length(ind.FN)) #FN:1 is replaced with 0
+    }
+
+    #Introduce FP: Introducing missclasification
+    #Increase FN (to decrease sensitivity): using a ZIP
+    datatest[[ji]]$Class2x2.a.ideal <-
+      ifelse(((datatest[[ji]]$DX.Miss == datatest[[ji]]$DX)), "T", "F")
+    datatest[[ji]]$Class2x2.b.ideal <-
+      ifelse(datatest[[ji]]$DX.Miss == 1, "P", "N")
+    datatest[[ji]]$Class2x2.ideal <-
+      paste0(datatest[[ji]]$Class2x2.a, datatest[[ji]]$Class2x2.b)
+
+
+    datatest[[ji]]$TRUE.PREV.DX.Miss <-
+      100 * sum((
+        datatest[[ji]] %>% group_by(ID.sub) %>% dplyr::summarise(cases = dplyr::first(DX.Miss))
+      )$cases) / nrow(datatest[[ji]])
+
+    mids.count.error <- 5
+    datatest[[ji]]$count1 <-
+      ifelse(datatest[[ji]]$Class2x2.ideal == "FP",
+             rpois(1,  lambda = (datatest[[ji]]$Mids1 +
+                                   mids.count.error)),
+             rpois(1,  lambda = (datatest[[ji]]$Mids1)))
+  }
+  ttemp<-datatest[[ji]]%>%group_by(ID.sub)%>%dplyr::summarise(cases=dplyr::first(DX))
+  datatest[[ji]]$TRUE.PREV.DX<- sum(ttemp$cases)/nrow(ttemp)
+
+#  mids.count.error<-5
+#  for (ii in 1:(nnn*n.days*n.slide)) {
+#    datatest[[ji]]$count1[ii]<-ifelse(datatest[[ji]]$Class2x2.ideal[ii]=="FP",
+#                                      rpois(1,  lambda=(datatest[[ji]]$Mids1[ii]+mids.count.error)),
+#                                      rzipois(1,  lambda=datatest[[ji]]$Mids1[ii],pstr0 = 0.15))
+#    datatest[[ji]]$count10[ii]<-rpois(1, lambda=datatest[[ji]]$Mids10[ii])
+#  }
+
+
+
+
+
+
+    datatest[[ji]]$count1<-rpois(nrow(datatest[[ji]]),  lambda=(datatest[[ji]]$Mids1 ))
+    datatest[[ji]]$count10<-rpois(nrow(datatest[[ji]]), lambda=datatest[[ji]]$Mids10)
+
+    temp.10<-datatest[[ji]]%>%group_by(School.name,pool10)%>%dplyr::summarise(count10.mean=round(mean(count10),digits=0))
+    datatest[[ji]]<-merge(datatest[[ji]],temp.10, by=c("School.name","pool10"))
+    datatest[[ji]]<-subset(datatest[[ji]],select=-count10)
+    #asas<-datatest[[ji]]
+    datatest[[ji]]<-dplyr::rename(datatest[[ji]],count10=count10.mean)
+  datatest[[ji]]$TestR1<-ifelse(datatest[[ji]]$count1==0,0,1)
+
+  #count1.mean
+
+  datatest[[ji]]$TestR10<-ifelse(datatest[[ji]]$count10==0,0,1)
+
+  datatest[[ji]]$Class2x2.a<-ifelse(((datatest[[ji]]$TestR1==datatest[[ji]]$DX)),"T","F")
+  datatest[[ji]]$Class2x2.b<-ifelse(datatest[[ji]]$TestR1==1,"P","N")
+  datatest[[ji]]$Class2x2<-paste0(datatest[[ji]]$Class2x2.a,datatest[[ji]]$Class2x2.b)
+  #o#  ver<-data.frame(Class=datatest$Class2x2,TestR1=datatest$TestR1,DX=datatest$DX)
+  #o#  tabla.d<-table(datatest$Class2x2,datatest$day)
+  #o#  tabla.s<-table(datatest$Class2x2,datatest$sample)
+  #o#  tabla.ds<-xtabs(~ Class2x2+day+sample, data=datatest)
+  #o#  ftable(tabla.ds)%>%pander::pander(style = 'rmarkdown')
+  #o#  colnames(tabla.d)<-c("day 1","day 3","day 3")
+  #o#  colnames(tabla.s)<-c("Sample 1","Sample 3","Sample 3")
+  #o#  colnames(tabla.ds)<-c("day 1","day 3","day 3")
+  #o#  print.table(tabla.d)
+  #o#  print.table(tabla.s)
+  #o#  tabla.d<-rbind(tabla.d)
+  #o#  tabla.s<-rbind(tabla.s)
+  #o#  tabla.d.t<-as.data.frame(t(tabla.d))
+  #o#  tabla.s.t<-as.data.frame(t(tabla.s))
+
+  if (params[[ji]][["misclasifica"]] ) {
+  datatest[[ji]]<-subset(datatest[[ji]],select = -c(Class2x2.a,Class2x2.b,Class2x2, Class2x2.a.ideal,Class2x2.b.ideal))}
+
+  #o#   #sensibility
+  #o#   print("sensibility day ")
+  #o#   print(round((100*  tabla.d.t$TP/(  tabla.d.t$TP+  tabla.d.t$FN))[1:3],digits=2))
+  #o#   #Specificity
+  #o#   print("Specificity day ")
+  #o#   print( round((100*  tabla.d.t$TN/(  tabla.d.t$TN+  tabla.d.t$FP)   )[1:3] ,digits=2)  )
+  #o#   #sensibility
+  #o#   print("sensibility sample ")
+  #o#   print(round((100*tabla.s.t$TP/(  tabla.s.t$TP+  tabla.s.t$FN) )[1:3] ,digits=2))
+  #o#   #Specificity
+  #o#   print("Specificity sample ")
+  #o#   print( round((100*tabla.s.t$TN/(  tabla.s.t$TN+  tabla.s.t$FP)[1:3]) ,digits=2))
+
+  datatest[[ji]]<-select(datatest[[ji]],-prev)
+
+  temp.1<-datatest[[ji]]%>%group_by(ID.sub)%>%dplyr::summarise(count1.mean=round(mean(count1),digits=0))
+  temp.10<-datatest[[ji]]%>%group_by(School.name,pool10)%>%dplyr::summarise(count10.mean=round(mean(count10),digits=0))
+
+  datatest[[ji]]<-merge(datatest[[ji]],temp.1, by="ID.sub")
+  datatest[[ji]]<-merge(datatest[[ji]],temp.10, by=c("School.name","pool10"))
+
+
+  var.labels = c(ID="Identifier for each School.name,day,sample and pool10",
+                 ID.sub="Unique identifier for each subject",
+                 sample="Sample number",
+                 day="Day number",
+                 Mu="Mean EPG by Country or Province",
+                 School.name="School number",
+                 ind.n="Subject ID per school (not unique)",
+                 pool10="Pool ID",
+                 DX="True Diagnostic status",
+                 DX.Miss="Diagnostic status with missclasification",
+                 Mi="Mean EPG in each subject",
+                 Mids1="Mean EPG in each subject per day and sample",
+                 Mids10="Mean EPG in each pool per day and sample",
+                 count1="Count of EPG in thick smear by subject per day and sample",
+                 count10="Count of EPG in thick smear by pool per day and sample",
+                 TestR1="KK binary result by subject per day and sample",
+                 TestR10="KK binary result by pool 10 per day and sample",
+                 count1.mean="Average Count of EPG in thick smear by subject",
+                 count10.mean="Average Count of EPG in thick smear by pool")
+
+  label(datatest[[ji]]) <- as.list(var.labels[match(names(datatest[[ji]]), names(var.labels))])
+
+  }
+
+  return(datatest)
+}
+
+
+DF<-list()
+reps=1:100
+for (kk in 1:length(grid.sim)) {
+  for (ii in reps) {
+     DF[[grid.sim[[kk]][["name"]] ]][[ii]]<-simSTH(params = list(grid.sim[[kk]]))
+  }
+}
+#DF[[grid.sim[[kk]][["name"]] ]]<-lapply(X = reps,FUN = simSTH,params = list(grid.sim[[kk]]))
+end_time <- Sys.time()
+end_time - start_time
+
+
+
+################################HISTROGRAM########################
+################################HISTROGRAM########################
+################################HISTROGRAM########################
+prev.list<-matrix(nrow=(100*nrow(gridd)), ncol=3);
+qqq=100
+  indd=16
+for (indd in 1:nrow(gridd)) {
+    for (qqq in 1:100) {
+  prev.list[qqq+(indd-1)*100,1]<-DF[[indd]][[qqq]][[1]][["TRUE.PREV.DX"]][1]
+  prev.list[qqq+(indd-1)*100,2]<-DF[[indd]][[qqq]][[1]][["dataset"]][1]
+  prev.list[qqq+(indd-1)*100,3]<- grid.sim[[indd]][["prev.STH"]]
+  }
+}
+  prev.list<-as.data.frame(  prev.list)
+library(ggplot2)
+ggplot(prev.list, aes(x=V1))+geom_histogram()
+colnames(prev.list)<-c("TP","Dataset","OTP")
+ggplot(prev.list, aes(x=TP))+geom_histogram()
+hist(prev.list$TP, main="All prevalence for all Simulated data mechanism (Prevalence=0.01 and 0.03)")
+################################HISTROGRAM########################
+################################HISTROGRAM########################
+################################HISTROGRAM########################
+
+
+
+
+library(dplyr)
+tempo<-vector(mode='list', length=nrow(gridd))
+
+for (kk in 1:16) {
+  #cat("Dataset number ");cat(kk, sep="\n")
+  for (mm in reps) {
+  tempo[[kk]][[mm]]<-DF[[grid.sim[[kk]][["name"]]]][[mm]][[1]]%>%dplyr::reframe(count1.n=max(count1),count10.mean.n=unique(count10.mean), School.name.n=unique(School.name), ID.sub.n=unique(ID.sub), DX.n=unique(DX),pool10.n=mean(pool10),day.n=max(day),sample.n=max(sample),n.n=unique(n),dataset.n=unique(dataset),ind.n.n=unique(ind.n),DX.n=unique(DX),Mu.n=unique(Mu),CV.d.n=unique(CV.d),NegDX.n=unique(NegDX),Sick.n=unique(Sick),Healthy.n=unique(Healthy),Mids1.n=mean(Mids1),Mid1.n=mean(Mid1),Mi.n=mean(Mi),Mids10.n=mean(Mids10),TRUE.PREV.DX.n=unique(TRUE.PREV.DX),TestR1.n=max(TestR1),TestR10.n=unique(TestR10), .by=ID.sub)
+  }
+  #cat("\n")
+}
+
+aver<-list()
+for (ggg in 1:16) {
+  #cat("dataset n: ",tempo[[ggg]][[1]][["dataset.n"]][1],'\n')
+  aver[[ggg]]<-table(tempo[[ggg]][[1]][["sample.n"]],tempo[[ggg]][[1]][["day.n"]])
+  #print(aver[[ggg]]);cat('\n')
+  #cat("days: ",grid.sim[[ggg]][["n.days"]],'\n')
+  #cat("slides: ",grid.sim[[ggg]][["n.slide"]],'\n','\n')
+
+  #cat("Number of ID.sub: ",length(unique(DF[[grid.sim[[ggg]][["name"]]]][[mm]][[1]]$ID.sub)),'\n')
+  #cat("Number of rows DF: ",nrow((DF[[grid.sim[[ggg]][["name"]]]][[mm]][[1]])),'\n')
+  #cat("Number of rows tempo: ",nrow((tempo[[ggg]][[1]])),'\n')
+  #cat("Number of schools: ",  grid.sim[[ggg]][["schools"]],'\n')
+  #cat("---------------------------------------------------------------",'\n')
+}
+
+
+library(prevalence)
+DF3<-list()
+for (kk in 1:length(DF)) {
+  for (ii in reps) {
+    DF3[[grid.sim[[kk]][["name"]] ]][[ii]]<-as.data.frame(DF[[kk]][[ii]][[1]])
+  }
+}
+```
+
+
+```{r c3cambio, eval=F, include=F}
+TEMPO<-list()
+
+for (kk in 1:length(DF)) {
+  for (ii in reps) {
+    TEMPO[[grid.sim[[kk]][["name"]] ]][[ii]]<-as.data.frame(tempo[[kk]][[ii]])
+  }
+}
+
+
+dataDF=TEMPO
+```
+
+
+
+
+```{r}
+setwd("C:/Users/32498/Documents/Master EPI/SEM6/STH_THESIS_2023/ThesisSTH/")
+load(file = "After_modeling_18may2023_2.RData")
+```
+
+```{r fitmodel, eval=TRUE, include=TRUE, echo=FALSE, tidy=TRUE, cache=F}
+#rm(list=ls())
+#rm(list="results1")
+
+library(formatR)
+library(prevalence)
+
+
+
+fit_models <- function(dataDF = DF,
+                       gridsDF = grid.sim,
+                       model = "") {
+  if (model == "Bayesian Rogen-Gladen") {
+    dffit <- vector(mode = 'list', length = length(grid.sim))
+    fit <- vector(mode = 'list', length = length(grid.sim))
+    model = "Bayesian Rogen-Gladen"
+    for (kk in 1:length(grid.sim)) {
+      #KK IS THE NUMBER SCENARIOS
+      dffit[[kk]] <-
+        data.frame(matrix(nrow = length(grid.sim), ncol = 17))
+      colnames(dffit[[kk]]) <-
+        c(
+          "Scenario name",
+          "prev.STH",
+          "Scenario",
+          "Dataset n",
+          "Rep n",
+          "model",
+          "theta.sd",
+          "theta",
+          "theta.var",
+          "theta.se",
+          "LIC",
+          "UIC",
+          "iHPD90",
+          "uHPD90",
+          "iHPD95",
+          "uHPD95",          
+          "n"
+        )
+      for (ii in reps) {
+        #REPS IS THE NUMBER OF REPETITION FOR EACH SCENARIO
+        
+
+        fit[[kk]][[ii]] <-
+          prevalence::truePrev(x = sum(dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$TestR1.n),
+                               n = length(dataDF[[grid.sim[[kk]][["name"]]]][[ii]]$TestR1.n))
+        as <- fit[[kk]][[ii]]
+        CI90<- coda::HPDinterval(as.mcmc(c(as@mcmc[["TP"]][[1]],as@mcmc[["TP"]][[2]])), prob=0.9)
+        CI95<- coda::HPDinterval(as.mcmc(c(as@mcmc[["TP"]][[1]],as@mcmc[["TP"]][[2]])), prob=0.95)
+
+
+        dffit[[kk]][ii, ] <-
+          c(
+            name = gridsDF[[kk]][["name"]],
+            prev.STH = gridsDF[[kk]][["prev.STH"]],
+            Scenario = gridsDF[[kk]][["Scenario"]],
+            dataset.n = kk,
+            rep = ii,
+            model = model,
+            theta.sd = as.numeric(summary(as)$TP[3, 4]),
+            theta = as.numeric(summary(as)$TP[3, 1]),
+            theta.var = as.numeric(summary(as)$TP[3, 5]),
+            theta.se = as.numeric(sqrt(summary(as)$TP[3, 5])),
+            LIC = as.numeric(summary(as)$TP[3, 6]),
+            UIC = as.numeric(summary(as)$TP[3, 7]),
+            iHPD90 = CI90[1],
+            uHPD90 = CI90[2],
+            iHPD95 = CI95[1],
+            uHPD95 = CI95[2],
+            n = as@par[["n"]]
+          )
+      }
+    }
+    
+  }
+  
+    else if (model == "Frequentist Gold-Standard") {
+    dffit <- vector(mode = 'list', length = length(grid.sim))
+    fit <- vector(mode = 'list', length = length(grid.sim))
+    model = "Frequentist Gold-Standard"
+    for (kk in 1:length(grid.sim)) {
+      #KK IS THE NUMBER SCENARIOS
+      dffit[[kk]] <-data.frame(matrix(nrow = length(grid.sim), ncol = 17))
+      colnames(dffit[[kk]]) <-
+        c(
+          "Scenario name",
+          "prev.STH",
+          "Scenario",
+          "Dataset n",
+          "Rep n",
+          "model",
+          "theta.sd",
+          "theta",
+          "theta.var",
+          "theta.se",
+          "LIC",
+          "UIC",
+          "iHPD90",
+          "uHPD90",
+          "iHPD95",
+          "uHPD95",          
+          "n"
+        )
+      for (ii in reps) {
+        #REPS IS THE NUMBER OF REPETITION FOR EACH SCENARIO
+        
+
+        fit[[kk]][[ii]] <-prevalence::propCI(x = sum(dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$TestR1.n),
+                               n = length(dataDF[[grid.sim[[kk]][["name"]]]][[ii]]$TestR1.n),method = "exact", level = 0.95, sortby = "level")
+        as <- fit[[kk]][[ii]]
+        dffit[[kk]][ii, ] <-
+          c(
+            name = gridsDF[[kk]][["name"]],
+            prev.STH = gridsDF[[kk]][["prev.STH"]],
+            Scenario = gridsDF[[kk]][["Scenario"]],
+            dataset.n = kk,
+            rep = ii,
+            model = model,
+            theta.sd = NA,
+            theta = as.numeric(as$p),
+            theta.var =NA ,
+            theta.se = NA,
+            LIC = as$lower,
+            UIC = as$upper,
+            iHPD90 = NA,
+            uHPD90 = NA,
+            iHPD95 = as$lower,
+            uHPD95 = as$upper,
+            n = as$n
+          )
+      }
+    }
+    
+  }
+  
+  else if (model == "Bayesian Rogen-Gladen Pool") {
+    model = "Bayesian Rogen-Gladen Pool"
+    dffit <- vector(mode = 'list', length = length(grid.sim))
+    for (kk in 1:length(grid.sim)) {
+      #KK IS THE NUMBER SCENARIOS
+      dffit[[kk]] <-
+        data.frame(matrix(nrow = length(grid.sim), ncol = 17))
+      fit <- vector(mode = 'list', length = length(grid.sim))
+      colnames(dffit[[kk]]) <-
+        c(
+          "Scenario name",
+          "prev.STH",
+          "Scenario",
+          "Dataset n",
+          "Rep n",
+          "model",
+          "theta.sd",
+          "theta",
+          "theta.var",
+          "theta.se",
+          "LIC",
+          "UIC",
+          "iHPD90",
+          "uHPD90",
+          "iHPD95",
+          "uHPD95",          
+          "n"
+        )
+      for (ii in reps) {
+        #REPS IS THE NUMBER OF REPETITION FOR EACH SCENARIO
+        tempor <-
+          cbind(
+            TestR10 = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$TestR10,
+            School.name = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$School.name,
+            pool10 = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$pool10
+          )
+        
+        
+        v.tempor <-tempor %>% as.data.frame() %>% group_by(School.name, pool10) %>%
+          dplyr::summarise(primero =dplyr::first(TestR10))
+        fit[[kk]][[ii]] <-prevalence::truePrevPools(x = v.tempor$primero,
+                                                    n = rep(10, each =
+gridsDF[[kk]][["schools"]]*gridsDF[[kk]][["pooln1"]]))
+        
+        as <- fit[[kk]][[ii]]
+        CI90<- coda::HPDinterval(as.mcmc(c(as@mcmc[["TP"]][[1]],as@mcmc[["TP"]][[2]])), prob=0.9)
+        CI95<- coda::HPDinterval(as.mcmc(c(as@mcmc[["TP"]][[1]],as@mcmc[["TP"]][[2]])), prob=0.95)
+
+        dffit[[kk]][ii, ] <-
+          c(
+            name = gridsDF[[kk]][["name"]],
+            prev.STH = gridsDF[[kk]][["prev.STH"]],
+            Scenario = gridsDF[[kk]][["Scenario"]],
+            dataset.n = kk,
+            rep = ii,
+            model = model,
+            theta.sd = as.numeric(summary(as)$TP[3, 4]),
+            theta = as.numeric(summary(as)$TP[3, 1]),
+            theta.var = as.numeric(summary(as)$TP[3, 5]),
+            theta.se = as.numeric(sqrt(summary(as)$TP[3, 5])),
+            LIC = as.numeric(summary(as)$TP[3, 6]),
+            UIC = as.numeric(summary(as)$TP[3, 7]),
+            iHPD90 = CI90[1],
+            uHPD90 = CI90[2],
+            iHPD95 = CI95[1],
+            uHPD95 = CI95[2],
+            n = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$n.n[1]
+          )
+      }
+    }
+    
+  } else if (model == "Method of Moment Pool") {
+    dffit <- vector(mode = 'list', length = length(grid.sim))
+    for (kk in 1:length(grid.sim)) {
+      #KK IS THE NUMBER SCENARIOS
+      dffit[[kk]] <-
+        data.frame(matrix(nrow = length(grid.sim), ncol = 17))
+      colnames(dffit[[kk]]) <-
+        c(
+          "Scenario name",
+          "prev.STH",
+          "Scenario",
+          "Dataset n",
+          "Rep n",
+          "model",
+          "theta.sd",
+          "theta",
+          "theta.var",
+          "theta.se",
+          "LIC",
+          "UIC",
+          "iHPD90",
+          "uHPD90",
+          "iHPD95",
+          "uHPD95",
+          "n"
+        )
+      for (ii in reps) {
+        #REPS IS THE NUMBER OF REPETITION FOR EACH SCENARIO
+        EPG.rep = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$count10.mean.n *24
+        School.rep = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$School.name.n
+        n.day.rep <- gridsDF[[1]][["n.days"]]
+        n.slide.rep <- gridsDF[[1]][["n.slide"]]
+        m_j <- gridsDF[[kk]][["pooln1"]]
+        
+        True.Pre.MoM <-
+          1 - dnbinom(
+            0,
+            mu = tapply(EPG.rep, School.rep, mean),
+            size = tapply(EPG.rep, School.rep, mean) / ((
+              m_j * tapply(EPG.rep, School.rep, var) / tapply(EPG.rep, School.rep, mean)
+            ) - 24 / (n.day.rep * n.slide.rep) - 1)
+          )
+        True.Pre.MoM <- ifelse(True.Pre.MoM == 'NaN', 0, True.Pre.MoM)
+        library("plotrix")
+        SE.True.Pre.MoM <- std.error(as.vector(True.Pre.MoM))
+        True.Pre.MoM <- mean(True.Pre.MoM)
+        True.Pre.Obs <-
+          tapply(dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$TRUE.PREV.DX, School.rep, mean)
+        SE.True.Pre.Obs <- std.error(as.vector(True.Pre.Obs))
+        True.Pre.Obs <- mean(True.Pre.Obs)
+        
+        
+        dffit[[kk]][ii, ] <-
+          c(
+            name = gridsDF[[kk]][["name"]],
+            prev.STH = gridsDF[[kk]][["prev.STH"]],
+            Scenario = gridsDF[[kk]][["Scenario"]],
+            dataset.n = kk,
+            rep = ii,
+            model = model,
+            theta.sd = sqrt(var(True.Pre.MoM)),
+            theta = True.Pre.MoM,
+            theta.var = var(True.Pre.MoM),
+            theta.se = SE.True.Pre.MoM,
+            #theta.obs=True.Pre.Obs,
+            #theta.obs.var=var(True.Pre.Obs), theta.obs.se=SE.True.Pre.Obs,
+            LIC = NA,
+            UIC = NA,
+            iHPD90 = NA,
+            uHPD90 = NA,
+            iHPD95 = NA,
+            uHPD95 = NA,            
+            n = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$n.n[1]
+          )
+      }
+    }
+  } else if (model == "Method of Moment") {
+    dffit <- vector(mode = 'list', length = length(grid.sim))
+    #24/(n.day*n.slide)
+    for (kk in 1:length(grid.sim)) {
+      #KK IS THE NUMBER SCENARIOS
+      dffit[[kk]] <-
+        data.frame(matrix(nrow = length(grid.sim), ncol = 17))
+      colnames(dffit[[kk]]) <-
+        c(
+          "Scenario name",
+          "prev.STH",
+          "Scenario",
+          "Dataset n",
+          "Rep n",
+          "model",
+          "theta.sd",
+          "theta",
+          "theta.var",
+          "theta.se",
+          "LIC",
+          "UIC",
+          "iHPD90",
+          "uHPD90",
+          "iHPD95",
+          "uHPD95",
+          "n"
+        )
+      for (ii in reps) {
+        #REPS IS THE NUMBER OF REPETITION FOR EACH SCENARIO
+        EPG.rep = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$count1.n * 24
+        School.rep = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$School.name.n
+        n.day.rep <- gridsDF[[1]][["n.days"]]
+        n.slide.rep <- gridsDF[[1]][["n.slide"]]
+        True.Pre.MoM <-
+          1 - dnbinom(
+            0,
+            mu = tapply(EPG.rep, School.rep, mean),
+            size = tapply(EPG.rep, School.rep, mean) / ((
+              tapply(EPG.rep, School.rep, var) / tapply(EPG.rep, School.rep, mean)
+            ) - 24 / (n.day.rep * n.slide.rep) - 1)
+          )
+
+        True.Pre.MoM <- ifelse(True.Pre.MoM == 'NaN', 0, True.Pre.MoM)
+        library("plotrix")
+        SE.True.Pre.MoM <- std.error(as.vector(True.Pre.MoM))
+        True.Pre.MoM <- mean(True.Pre.MoM)
+        
+        True.Pre.Obs <-
+          tapply(dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$TRUE.PREV.DX, School.rep, mean)
+        SE.True.Pre.Obs <- std.error(as.vector(True.Pre.Obs))
+        True.Pre.Obs <- mean(True.Pre.Obs)
+        
+        
+        dffit[[kk]][ii, ] <-
+          c(
+            name = gridsDF[[kk]][["name"]],
+            prev.STH = gridsDF[[kk]][["prev.STH"]],
+            Scenario = gridsDF[[kk]][["Scenario"]],
+            dataset.n = kk,
+            rep = ii,
+            model = model,
+            theta.sd = sqrt(var(True.Pre.MoM)),
+            theta = True.Pre.MoM,
+            theta.var = var(True.Pre.MoM),
+            theta.se = SE.True.Pre.MoM,
+            LIC = NA,
+            UIC = NA,
+            iHPD90 = NA,
+            uHPD90 = NA,
+            iHPD95 = NA,
+            uHPD95 = NA,            
+            
+            
+            n = dataDF[[gridsDF[[kk]][["name"]]]][[ii]]$n.n[1]
+          )
+      }
+    }
+  }
+  # Return relevant coefficients
+  list(dffit)
+}
+
+```
+
+
+
+```{rcambio, eval=F, include=F}
+results1<-results2<-results3<-results4<-list()
+library(coda)
+results1<-fit_models(dataDF=TEMPO, gridsDF=grid.sim,   model= "Bayesian Rogen-Gladen")
+results2<-fit_models(dataDF=TEMPO, gridsDF=grid.sim,   model="Bayesian Rogen-Gladen Pool")
+```
+
+
+```{r, cache=F}
+#setwd("C:/Users/32498/Documents/Master EPI/SEM6/STH_THESIS_2023/ThesisSTH/")
+#load(file = "After_modeling_18may2023_2.RData")
+
+results3<-fit_models(dataDF=TEMPO, gridsDF=grid.sim,   model="Method of Moment")
+results4<-fit_models(dataDF=TEMPO, gridsDF=grid.sim,   model="Method of Moment Pool")
+results5<-list()
+#results5<-fit_models(dataDF=TEMPO, gridsDF=grid.sim,   model="Frequentist Gold-Standard")
+
+```
+
+
+```{r c5, cache=F}
+result1<-results1[[1]]
+```
+
+
+```{r c6, cache=F}
+result2<-results2[[1]]
+```
+
+
+```{r c7, cache=F}
+result3<-results3[[1]]
+```
+
+
+```{r c8, cache=F}
+result4<-results4[[1]]
+```
+
+
+```{r c88, cache=F}
+#result5<-results5[[1]]
+```
+
+
+```{r c9, cache=F}
+names(result1)<-c(result1[[1]][["Scenario name"]][1],
+                 result1[[2]][["Scenario name"]][1],
+                 result1[[3]][["Scenario name"]][1],
+                 result1[[4]][["Scenario name"]][1],
+                 result1[[5]][["Scenario name"]][1],
+                 result1[[6]][["Scenario name"]][1],
+                 result1[[7]][["Scenario name"]][1],
+                 result1[[8]][["Scenario name"]][1],
+                 result1[[9]][["Scenario name"]][1],
+                 result1[[10]][["Scenario name"]][1],
+                 result1[[11]][["Scenario name"]][1],
+                 result1[[12]][["Scenario name"]][1],
+                 result1[[13]][["Scenario name"]][1],
+                 result1[[14]][["Scenario name"]][1],
+                 result1[[15]][["Scenario name"]][1],
+                 result1[[16]][["Scenario name"]][1])
+names(result2)<-c(result2[[1]][["Scenario name"]][1],
+                  result2[[2]][["Scenario name"]][1],
+                  result2[[3]][["Scenario name"]][1],
+                  result2[[4]][["Scenario name"]][1],
+                  result2[[5]][["Scenario name"]][1],
+                  result2[[6]][["Scenario name"]][1],
+                  result2[[7]][["Scenario name"]][1],
+                  result2[[8]][["Scenario name"]][1],
+                  result2[[9]][["Scenario name"]][1],
+                  result2[[10]][["Scenario name"]][1],
+                  result2[[11]][["Scenario name"]][1],
+                  result2[[12]][["Scenario name"]][1],
+                  result2[[13]][["Scenario name"]][1],
+                  result2[[14]][["Scenario name"]][1],
+                  result2[[15]][["Scenario name"]][1],
+                  result2[[16]][["Scenario name"]][1])
+names(result3)<-c(result3[[1]][["Scenario name"]][1],
+                  result3[[2]][["Scenario name"]][1],
+                  result3[[3]][["Scenario name"]][1],
+                  result3[[4]][["Scenario name"]][1],
+                  result3[[5]][["Scenario name"]][1],
+                  result3[[6]][["Scenario name"]][1],
+                  result3[[7]][["Scenario name"]][1],
+                  result3[[8]][["Scenario name"]][1],
+                  result3[[9]][["Scenario name"]][1],
+                  result3[[10]][["Scenario name"]][1],
+                  result3[[11]][["Scenario name"]][1],
+                  result3[[12]][["Scenario name"]][1],
+                  result3[[13]][["Scenario name"]][1],
+                  result3[[14]][["Scenario name"]][1],
+                  result3[[15]][["Scenario name"]][1],
+                  result3[[16]][["Scenario name"]][1])
+names(result4)<-c(result4[[1]][["Scenario name"]][1],
+                  result4[[2]][["Scenario name"]][1],
+                  result4[[3]][["Scenario name"]][1],
+                  result4[[4]][["Scenario name"]][1],
+                  result4[[5]][["Scenario name"]][1],
+                  result4[[6]][["Scenario name"]][1],
+                  result4[[7]][["Scenario name"]][1],
+                  result4[[8]][["Scenario name"]][1],
+                  result4[[9]][["Scenario name"]][1],
+                  result4[[10]][["Scenario name"]][1],
+                  result4[[11]][["Scenario name"]][1],
+                  result4[[12]][["Scenario name"]][1],
+                  result4[[13]][["Scenario name"]][1],
+                  result4[[14]][["Scenario name"]][1],
+                  result4[[15]][["Scenario name"]][1],
+                  result4[[16]][["Scenario name"]][1])
+#names(result5)<-c(result5[[1]][["Scenario name"]][1],
+#                  result5[[2]][["Scenario name"]][1],
+#                  result5[[3]][["Scenario name"]][1],
+#                  result5[[4]][["Scenario name"]][1],
+#                  result5[[5]][["Scenario name"]][1],
+#                  result5[[6]][["Scenario name"]][1],
+#                  result5[[7]][["Scenario name"]][1],
+#                  result5[[8]][["Scenario name"]][1],
+#                  result5[[9]][["Scenario name"]][1],
+#                  result5[[10]][["Scenario name"]][1],
+#                  result5[[11]][["Scenario name"]][1],
+#                  result5[[12]][["Scenario name"]][1],
+#                  result5[[13]][["Scenario name"]][1],
+#                  result5[[14]][["Scenario name"]][1],
+#                  result5[[15]][["Scenario name"]][1],
+#                  result5[[16]][["Scenario name"]][1])
+#result3<-subset(result3,select())
+#colnames(result3)
+
+#PROVISIONAL
+#PROVISIONAL
+#PROVISIONAL
+#colnames(result1[["Dataset: 1Shools: 10. STH Prev:0.01. Days:1. Slides:1"]])%>%clipr::write_clip()
+for (kk in 1:16) {
+  colnames(result1[[kk]])<-colnames(result2[[kk]])<-c("Scenario name",
+"prev.STH",
+"Scenario",
+"Dataset n",
+"Rep n",
+"model",
+"theta.sd",
+"theta",
+"theta.var",
+"theta.se",
+"LIC",
+"UIC",
+"iHPD90",
+"uHPD90",
+"iHPD95",
+"uHPD95",
+"n")
+
+}
+
+#PROVISIONAL
+#PROVISIONAL
+#PROVISIONAL
+
+
+
+#results.merged<-c(result1,result2,result3,result4,result5)
+results.merged<-c(result1,result2,result3,result4)
+relhaz <- do.call(
+  rbind.data.frame,
+  results.merged
+)
+
+row.names(relhaz) <- NULL
+
+
+relhaz$prev.STH<-as.numeric(relhaz$prev.STH)
+relhaz$theta.sd<-as.numeric(relhaz$theta.sd)
+relhaz$theta<-as.numeric(relhaz$theta)
+relhaz$theta.se<-as.numeric(relhaz$theta.se)
+relhaz$theta.var<-as.numeric(relhaz$theta.var)
+relhaz$LIC<-as.numeric(relhaz$LIC)
+relhaz$UIC<-as.numeric(relhaz$UIC)
+relhaz$iHPD90<-as.numeric(relhaz$iHPD90)
+relhaz$uHPD90<-as.numeric(relhaz$uHPD90)
+relhaz$iHPD95<-as.numeric(relhaz$iHPD95)
+relhaz$uHPD95<-as.numeric(relhaz$uHPD95)
+relhaz$n<-as.numeric(relhaz$n)
+#relhaz$TP<-as.numeric(relhaz$TP)
+relhaz$`Rep n`<-as.numeric(relhaz$`Rep n`)
+
+#table(relhaz$model,relhaz$n)
+
+#relhaz<-rename(relhaz,Dataset.n=`Dataset n`)
+#relhaz<-rename(relhaz,Rep=`Rep n`)
+```
+
+
+
+```{r c10, tab.cap="Prevalence check-up", cache=F}
+#table(relhaz$prev.STH)
+#unique(relhaz$model)
+relhaz$model<-ifelse(relhaz$model=="Bayesian Rogen-Gladen","BRGI",ifelse(relhaz$model=="Bayesian Rogen-Gladen Pool","BRGP", ifelse(relhaz$model=="Method of Moment","MoM Ind",ifelse(relhaz$model=="Method of Moment Pool","MoM Pool",relhaz$model))))
+
+
+relhaz$Schools<-ifelse(grepl("Shools: 10",relhaz$`Scenario name`),10,20)
+relhaz$Days<-ifelse(grepl("Days:1",relhaz$`Scenario name`),1,2)
+relhaz$Slides<-ifelse(grepl("Slides:1",relhaz$`Scenario name`),1,2)
+relhaz$daysXslides<-relhaz$Days*relhaz$Slides
+
+
+#chequear el orden de TP, y previas integraciones
+prevalencias<-unique(relhaz$prev.STH)
+
+for (ll in 1:length(unique(relhaz$prev.STH))) {
+  assign(paste("simm.all", ll, sep=""), rsimsum::simsum(data =   subset(relhaz,prev.STH==prevalencias[1]), estvarname = "theta", se ="theta.se", true = relhaz$prev.STH[ll], methodvar = "model", ci.limits = c("LIC", "UIC"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.95 ) ) )
+}
+
+for (ll in 1:length(unique(relhaz$prev.STH))) {
+  assign(paste("simm.all.HPD.90.", ll, sep=""), rsimsum::simsum(data =   subset(relhaz,prev.STH==prevalencias[1]), estvarname = "theta", se ="theta.se", true = relhaz$prev.STH[ll], methodvar = "model", ci.limits = c("iHPD90", "uHPD90"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.90 ) ))
+}
+
+
+simm.all.HPD.95.1<- rsimsum::simsum(data =   subset(relhaz,prev.STH==0.01), estvarname = "theta", se ="theta.se", true = 0.01, methodvar = "model", ci.limits = c("iHPD95", "uHPD95"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.95 ) )
+simm.all.HPD.90.1<- rsimsum::simsum(data =   subset(relhaz,prev.STH==0.01), estvarname = "theta", se ="theta.se", true = 0.01, methodvar = "model", ci.limits = c("iHPD90", "uHPD90"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.90 ) )
+simm.all.HPD.95.2<- rsimsum::simsum(  data =   subset(relhaz,prev.STH==0.03), estvarname = "theta", se ="theta.se", true = 0.03, methodvar = "model", ci.limits = c("iHPD95", "uHPD95"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.95 ) )
+simm.all.HPD.90.2<- rsimsum::simsum(data =   subset(relhaz,prev.STH==0.03), estvarname = "theta", se ="theta.se", true = 0.03, methodvar = "model", ci.limits = c("iHPD90", "uHPD90"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.90 ) )
+
+#simm.all.HPD.95.1;simm.all.HPD.95.2
+```
+
+# Results
+
+## Simulation study
+
+### Performance analysis of the models
+
+All scenarios ($1 \ldots 8$ or $9 \ldots 16$) for $\pi=0.01$ and $\pi=0.03$ are presented in the Tables \ref{tab:result1} and \ref{tab:result2} respectively. In both Tables \ref{tab:mcse1} and \ref{tab:mcse2} (appendix), alternative performance measures are presented for all models clustered by performance measure type, and the \acr{MCSE} of all performance measures is also included, such tables confirm that the number of conducted repetitions provides enough precision and low enough \acr{MCSE} for all performance measures. 
+
+The estimates of the performance measures \acr{CP90} and \acr{CP95} for the \acr{MoM} models is not presented because the method does not provide \acr{CI} for parameter of interest $\hat \pi$, which is essential for the estimation of \acr{CP90} and \acr{CP95}.
+
+#### Performance measures when $\pi=0.01$
+
+
+Concerning bias, both methods (\acr{BRGI} and \acr{BRGP}) have the same magnitude order of bias; however, the bias for \acr{BRGP} is slightly higher than for the \acr{BRGI}, as expected. Additionally, the \acr{BRGP} underestimate $\pi$ 5/8 times, while the \acr{BRGI} underestimates $\pi$ 1/8 times. We can conclude that the \acr{BRGI} provides better coverage than the \acr{BRGP} and a more conservative $\pi$ estimation (slightly overestimating most of the time). Moreover, it is quite obvious that both \acr{BRGE} estimators outperform the \acr{MoM} concerning the bias and \acr{MSE} in every scenario ($1 \ldots 16$); additionally, the \acr{MoM} always overestimates the $\hat \pi$.
+
+In Table \ref{tab:result1} ( $\pi=0.01$), the comparison between \acr{BRGI} and \acr{BRGP} concerning \acr{CP90} shows that the \acr{BRGI} has better coverage since it achieved the nominal value at least 2/8 times, while the \acr{BRGP} never does. A similar performance is observed when \acr{CP95} is considered, where 2/8 times \acr{CP95} is equal to or higher than the nominal values for the \acr{BRGP}, and 3/8 times \acr{CP95} achieves the nominal values for the \acr{BRGI}.
+
+
+#### Performance measures when  $\pi=0.03$
+
+For bias, both methods (\acr{BRGI} and \acr{BRGP}) have the same magnitude order of bias; however, the bias for the \acr{BRGP} is slightly higher than for \acr{BRGI}, as expected. Overall, the \acr{BRGP} and the \acr{BRGI} estimators outperform the \acr{MoM} concerning the bias and \acr{MSE} in every scenario, the the \acr{MoM} estimators underestimate $\pi$ most of the times. We can conclude that the \acr{BRGI} provides better coverage with a lower bias than the \acr{BRGP}.  For both $\pi$ scenarios ($[0.01,0.03]$), we can consider not only the mean bias but the distribution of all possible \acr{BRGE} biases (100 repetitions) for each scenario (see Figure \ref{fig:box1} and \ref{fig:box2}), we can conclude that all scenarios biases are pretty similar and close enough to 0. 
+In Table \ref{tab:result2} ( $\pi=0.03$), the comparison between the \acr{BRGI} and the \acr{BRGP} concerning \acr{CP90} shows that the \acr{BRGI} has better coverage since it achieve the nominal value at least 1/8 times, while the \acr{BRGI} never does it for \acr{CP90}. A similar performance is observed when \acr{CP95} is considered, where the \acr{CP95} is always lower than the nominal values for the \acr{BRGP}, and the \acr{CP95} is equal to or higher than the nominal values for the \acr{BRGI} 4/8 times. Comparing across prevalence scenarios, the \acr{BRGI} has better coverage than when $\pi=0.03$ than $\pi=0.01$; in all prevalence scenarios, the \acr{BRGP} tends to underestimate most of the times, like the \acr{BRGI} for higher prevalence; however, the \acr{BRGI} tends to overestimate for lower prevalence. Taking into account all comparisons, we can conclude that the \acr{BRGI} is recommended, but that the \acr{BRGP} has a similar performance. 
+
+An additional comparison is conducted in order to check the agreement between all model estimations using Bland-Altman plots in all True Prevalences values and \acr{DGM} scenarios (see Figures \ref{fig:ba_all1}, \ref{fig:ba_all2}, \ref{fig:ba_all3} and \ref{fig:ba_all4} of the appendix). The best agreement occurs between the \acr{BRGI} and the \acr{BRGP}, followed by the agreement between the individual and pooled \acr{MoM} estimates, while the highest disagreement occurs between the Bayesian and \acr{MoM} estimates.
+
+
+
+```{r}
+theme_Publication <- function(base_size=14 ) {
+      library(grid)
+      library(ggthemes)
+      (theme_foundation(base_size=base_size )
+       + theme(plot.title = element_text(face = "bold",
+                                         size = rel(1), hjust = 0.5),
+               text = element_text(),
+               panel.background = element_rect(colour = NA),
+               plot.background = element_rect(colour = NA),
+               panel.border = element_rect(colour = NA),
+               axis.title = element_text(face = "bold",size = rel(.8)),
+               axis.title.y = element_text(angle=90,vjust =2),
+               axis.title.x = element_text(vjust = -0.2),
+               axis.text = element_text(), 
+               axis.line = element_line(colour="darkgrey"),
+               axis.ticks = element_line(colour="darkgrey"),
+               panel.grid.major = element_line(colour="#f0f0f0"),
+               panel.grid.minor = element_blank(),
+               legend.key = element_rect(colour = NA),
+               legend.position = "bottom",
+               legend.direction = "horizontal",
+               legend.key.size= unit(0.7, "cm"),
+               legend.margin = unit(0, "cm"),
+               legend.title = element_text(size=6,face="italic"),
+              legend.text=element_text(size=6),
+               plot.margin=unit(c(10,5,5,5),"mm"),
+               strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
+               strip.text = element_text( size = 7),
+               axis.text.x = element_text(size = 5),
+               axis.text.y = element_text(size = 6)
+          ))
+      
+}
+
+
+
+scale_fill_Publication <- function(...){
+      library(scales)
+      discrete_scale("fill","Publication",manual_pal(values = c("#fdb462","#7fc97f","#386cb0","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3")), ...)
+
+}
+
+scale_colour_Publication <- function(...){
+      library(scales)
+      discrete_scale("colour","Publication",manual_pal(values = c("#fdb462","#7fc97f","#386cb0","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3")), ...)
+
+}
+```
+
+
+```{r box1, fig.cap="Boxplot for model bias for each scenario and number of $days$ x $slides$. The scenarios are ordered according to the average bias of each one; True prevalence = 0.01.", fig.height=8}
+library(ggplot2)
+library(ggpattern)
+
+relhaz$bias<-relhaz$theta-relhaz$prev.STH
+
+#  library(ggpubr)
+#table(relhaz1$Schools)
+ggplot(subset(relhaz,prev.STH==0.01), aes(x=reorder(Scenario,bias,na.rm = TRUE),y=bias, pattern = as.factor(Schools), fill=as.factor(daysXslides))) +
+  geom_boxplot(position="dodge",aes(fill=as.factor(daysXslides)))+geom_hline(yintercept=0, linetype="dashed", color = "black")+ facet_wrap(~model, ncol=1, scales = "free")+
+  geom_point(size=0.2,alpha = 0.3)+ labs(x="Scenarios")+
+  scale_fill_manual(name = "daysXslides", values = c("#FDECCD", "#BAE4B3", "#6BADD5")) +
+  geom_boxplot_pattern(position = position_dodge(preserve = "single"), pattern_angle = 45, pattern_density = 0.01, pattern_spacing = 0.025, pattern_key_scale_factor = 0.6) +
+  guides(pattern = guide_legend(override.aes = list(fill = "white")), fill = guide_legend(override.aes = list(pattern = "none")))+theme(legend.position="bottom", panel.background = element_blank(), axis.line = element_line(colour = "grey"), panel.grid.major = element_line(colour = "lightgray"),panel.grid.minor = element_line(colour = "lightgray"), 
+panel.grid.major.y = element_blank())+labs(pattern=expression(n[schools]))+ylab("Bias")
+
+
+#FACET MODELS!!!!!!
+#DAYS  or scenarios
+#
+
+#  stat_compare_means(aes(group = model), label = "p.signif", label.y = 10, label.x = 1.5) +
+#  stat_compare_mean s(aes(group = model), label = "p.format", label.y = 8.5)
+```
+
+
+```{r box2, fig.cap="Boxplot for model bias for each scenario and number of $days \\cdot slides$. The scenarios are ordered according to the average bias of each one; True prevalence = 0.03.", fig.height=8}
+
+relhaz.p<-subset(relhaz,prev.STH==0.03)
+relhaz.p$Scenario.n<-as.numeric(relhaz.p$Scenario)
+relhaz.p<-relhaz.p[order(relhaz.p$Scenario.n),]
+
+
+
+ggplot(relhaz.p, aes(x=reorder(Scenario,bias,na.rm = TRUE),y=bias, pattern = as.factor(Schools), fill=as.factor(daysXslides))) +
+  geom_boxplot(position="dodge",aes(fill=as.factor(daysXslides)))+geom_hline(yintercept=0, linetype="dashed", color = "black")+ facet_wrap(~model, ncol=1, scales = "free")+
+  geom_point(size=0.2,alpha = 0.3)+ labs(x="Scenarios")+
+  scale_fill_manual(name = "daysXslides", values = c("#FDECCD", "#BAE4B3", "#6BADD5")) +
+  geom_boxplot_pattern(position = position_dodge(preserve = "single"), pattern_angle = 45, pattern_density = 0.01, pattern_spacing = 0.025, pattern_key_scale_factor = 0.6) +
+  guides(pattern = guide_legend(override.aes = list(fill = "white")), fill = guide_legend(override.aes = list(pattern = "none")))+theme(legend.position="bottom", panel.background = element_blank(), axis.line = element_line(colour = "grey"), panel.grid.major = element_line(colour = "lightgray"),panel.grid.minor = element_line(colour = "lightgray"), 
+panel.grid.major.y = element_blank())+labs(pattern=expression(n[schools]))+ylab("Bias")
+
+
+
+
+
+```
+
+#### Performance measures when $\pi=0.1$ and $\pi=0.2$
+
+Additional simulated scenarios for 10% and 20% prevalence are presented in Table \ref{tab:ch1020_TabDGM}, and Figures \ref{fig:ch1020_box1} and \ref{fig:ch1020_box2} (appendix). These scenarios are very similar to what was observed for the previously described prevalence, where lower $\pi$ bias is observed when *days*Xslides=1, and higher when $days \cdot slides=4$;
+Which it is as expected since the procedure of averaging the \acr{EPG} counts for each subject sample (*days* and/or*slides*) will always neglect a zero counts sample if the rest of the samples counts are different than zero.
+
+Bayesian models also provided bias close to zero, and the \acr{MoM} always produces higher bias in all scenarios and prevalences. An alternative way to summarize all the bias observed in each scenario is to use all the \acr{DGM}s features to predict the bias for each scenario; such analysis is presented in the next section. 
+
+As a final comment related to the impact on the $n_{schools}$ in the bias variability for all scenarios, which seems to be independent on the true prevalance value. There seems to be a systematic difference between scenarios with $n_{schools}=10$ compared to those with $n_{schools}=20$. The Scenarios with $n_{schools}=10$ (scenarios 1, 2,3, 4, 9, 10, 11, 12) have wider box-plots (i.e. larger bias variability) than scenario with $n_{schools}=20$ (scenarios 5, 6,7,8, 13, 14, 15, 16).  
+
+```{r c11a, cache=F, echo=FALSE}
+p.simm.all.HPD.95.1<-summary(simm.all.HPD.95.1)[["summ"]]
+p.simm.all.HPD.95.1<-p.simm.all.HPD.95.1[p.simm.all.HPD.95.1$stat %in% c("bias",    "cover", "mse"  ),]
+p.simm.all.HPD.95.1$stat<-ifelse(p.simm.all.HPD.95.1$stat=="cover","CP 95%",p.simm.all.HPD.95.1$stat)
+
+p.simm.all.HPD.90.1<-summary(simm.all.HPD.90.1)[["summ"]]
+p.simm.all.HPD.90.1<-p.simm.all.HPD.90.1[p.simm.all.HPD.90.1$stat=="cover",]
+p.simm.all.HPD.90.1$stat<-ifelse(p.simm.all.HPD.90.1$stat=="cover","CP 90%",p.simm.all.HPD.90.1$stat)
+p.simm.all.HPD.95.1<-rbind(p.simm.all.HPD.95.1,p.simm.all.HPD.90.1)
+
+p.simm.all.HPD.95.1<-subset(p.simm.all.HPD.95.1,select=-c(lower,upper))
+p.simm.all.HPD.95.1<-p.simm.all.HPD.95.1[order(p.simm.all.HPD.95.1$stat),]
+p.simm.all.HPD.95.1$est<-ifelse((p.simm.all.HPD.95.1$stat=="CP 90%"|p.simm.all.HPD.95.1$stat=="CP 95%")&(grepl("MoM",p.simm.all.HPD.95.1$model)),NA,p.simm.all.HPD.95.1$est)
+```
+
+
+```{r result1, cache=F, echo=FALSE}
+pp.1<-p.simm.all.HPD.95.1%>%tidyr::pivot_wider(names_from = model, values_from = c(est,mcse))
+
+pp.1<-pp.1[order(pp.1$Schools,pp.1$Days,pp.1$Slides),]
+pp.1$Scenarios<-rep(1:(nrow(gridd)/2),each=4)
+
+pp.1.scene<-subset(pp.1,select=c(stat,est_BRGI,est_BRGP,`est_MoM Ind`,`est_MoM Pool`))
+pp.1.perf<-subset(pp.1,select=c(stat,Schools,Days,Slides,est_BRGI,mcse_BRGI,est_BRGP,mcse_BRGP,`est_MoM Ind`,`mcse_MoM Ind`,`est_MoM Pool`,`mcse_MoM Pool`))
+
+
+
+
+if(knitr::is_latex_output()) {
+colnames(pp.1.scene)<-c("Measures","Estimates", "Estimates", "Estimates", "Estimates" )
+colnames(pp.1.perf)<-c("Measures","$n_{schools}$","$n_{days}$","$n_{slides}$","est","mcse","est","mcse","est","mcse","est","mcse")
+  kableExtra::kable(pp.1.scene, caption = "Performance measure for prevalence=0.01, for each scenario by model",booktabs = T, escape=T,  digits=5, format="latex")%>%kableExtra::kable_styling(latex_options = c("striped", "scale_down"),font_size = 9,full_width = T) %>% kableExtra::add_header_above(c("Performance" = 1, "BRGI" = 1, "BRGP" = 1, "MoM Ind" = 1, "MoM Pool" = 1))%>%
+  kableExtra::pack_rows("Scenario 1", 1, 4)%>%
+  kableExtra::pack_rows("Scenario 2", 5, 8)%>%
+  kableExtra::pack_rows("Scenario 3", 9, 12)%>%
+  kableExtra::pack_rows("Scenario 4", 13, 16)%>%
+  kableExtra::pack_rows("Scenario 5", 17, 20)%>%
+  kableExtra::pack_rows("Scenario 6", 21, 24)%>%
+  kableExtra::pack_rows("Scenario 7", 25, 28)%>%
+  kableExtra::pack_rows("Scenario 8", 29, 32)
+} else if (!knitr::is_latex_output() ) {
+  
+  
+pp.1.scene%>%flextable::flextable()%>%   autofit()%>%flextable::set_caption("Performance measure for prevalence=0.01, for each scenario by model")
+}
+
+
+
+```
+
+
+ 
+
+
+
+
+```{r c13a1, cache=F, fig.cap=" Zip Plot Comparing Simulation Results for BRGI, and BRGP True Prevalence Value 0.01, CP=0.90." }
+# HPD CI of the prevalence package
+simm.all.HPD.90.1.filter<-simm.all.HPD.90.1
+simm.all.HPD.90.1.filter[["summ"]]<-simm.all1[["summ"]][!grepl("MoM",simm.all1[["summ"]][["model"]]),]
+a1<-autoplot(simm.all.HPD.90.1.filter, type = "zip")+theme(axis.text.x = element_text(size = 6),axis.text.y = element_text(size = 6))    
+```
+
+
+```{r c13a2, cache=F, fig.cap=" Zip Plot Comparing Simulation Results for BRGI, and BRGP True Prevalence Value 0.01, CP=0.95." }
+# HPD CI of the prevalence package
+simm.all.HPD.95.1.filter<-simm.all.HPD.95.1
+simm.all.HPD.95.1.filter[["summ"]]<-simm.all1[["summ"]][!grepl("MoM",simm.all1[["summ"]][["model"]]),]
+a2<-autoplot(simm.all.HPD.95.1.filter, type = "zip")+theme(axis.text.x = element_text(size = 6),axis.text.y = element_text(size = 6))    
+
+#simm.all.HPD.95.1;simm.all.HPD.95.2
+```
+
+
+
+```{r c11b, echo=FALSE, cache=F}
+p.simm.all.HPD.95.2<-summary(simm.all.HPD.95.2)[["summ"]]
+p.simm.all.HPD.95.2<-p.simm.all.HPD.95.2[p.simm.all.HPD.95.2$stat %in% c("bias",    "cover", "mse"  ),]
+p.simm.all.HPD.95.2$stat<-ifelse(p.simm.all.HPD.95.2$stat=="cover","CP 95%",p.simm.all.HPD.95.2$stat)
+
+p.simm.all.HPD.90.2<-summary(simm.all.HPD.90.2)[["summ"]]
+p.simm.all.HPD.90.2<-p.simm.all.HPD.90.2[p.simm.all.HPD.90.2$stat=="cover",]
+p.simm.all.HPD.90.2$stat<-ifelse(p.simm.all.HPD.90.2$stat=="cover","CP 90%",p.simm.all.HPD.90.2$stat)
+p.simm.all.HPD.95.2<-rbind(p.simm.all.HPD.95.2,p.simm.all.HPD.90.2)
+
+p.simm.all.HPD.95.2<-subset(p.simm.all.HPD.95.2,select=-c(lower,upper))
+p.simm.all.HPD.95.2<-p.simm.all.HPD.95.2[order(p.simm.all.HPD.95.2$stat),]
+p.simm.all.HPD.95.2$est<-ifelse((p.simm.all.HPD.95.2$stat=="CP 90%"|p.simm.all.HPD.95.2$stat=="CP 95%")&(grepl("MoM",p.simm.all.HPD.95.2$model)),NA,p.simm.all.HPD.95.2$est)
+```
+
+
+
+
+
+```{r result2, cache=F, echo=FALSE}
+pp.2<-p.simm.all.HPD.95.2%>%tidyr::pivot_wider(names_from = model, values_from = c(est,mcse))
+pp.2<-pp.2[order(pp.2$Schools,pp.2$Days,pp.2$Slides),]
+pp.2$Scenarios<-rep((1+8):(nrow(gridd)/2+8),each=4)
+
+pp.2.scene<-subset(pp.2,select=c(stat,est_BRGI,est_BRGP,`est_MoM Ind`,`est_MoM Pool`))
+pp.2.perf<-subset(pp.2,select=c(stat,Schools,Days,Slides,est_BRGI,mcse_BRGI,est_BRGP,mcse_BRGP,`est_MoM Ind`,`mcse_MoM Ind`,`est_MoM Pool`,`mcse_MoM Pool`))
+
+
+if(knitr::is_latex_output()) {
+colnames(pp.2.scene)<-c("Measures","Estimates", "Estimates", "Estimates", "Estimates" )
+colnames(pp.2.perf)<-c("Measures","$n_{schools}$","$n_{days}$","$n_{slides}$","est","mcse","est","mcse","est","mcse","est","mcse")
+  
+pp.2.scene%>% kableExtra::kable(caption = "Performance measure for prevalence=0.03, for each scenario by model",escape=T,  booktabs = T,  format="latex", digits=5 )%>%kableExtra::kable_styling(font_size = 9,latex_options = c("striped", "scale_down"),full_width = T)%>%kableExtra::add_header_above(c("Performance" = 1, "BRGI" = 1, "BRGP" = 1, "MoM Ind" = 1, "MoM Pool" = 1))%>%
+  kableExtra::pack_rows("Scenario 9", 1, 4)%>%
+  kableExtra::pack_rows("Scenario 10", 5, 8)%>%
+  kableExtra::pack_rows("Scenario 11", 9, 12)%>%
+  kableExtra::pack_rows("Scenario 12", 13, 16)%>%
+  kableExtra::pack_rows("Scenario 13", 17, 20)%>%
+  kableExtra::pack_rows("Scenario 14", 21, 24)%>%
+  kableExtra::pack_rows("Scenario 15", 25, 28)%>%
+  kableExtra::pack_rows("Scenario 16", 29,32)
+} else if (!knitr::is_latex_output() ) {
+pp.2.scene%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Performance measure for prevalence=0.03, for each scenario by model")
+}
+ 
+ 
+```
+
+
+
+
+
+ 
+
+
+
+```{r}
+# HPD CI of the prevalence package
+simm.all.HPD.90.2.filter<-simm.all.HPD.90.2
+simm.all.HPD.90.2.filter[["summ"]]<-simm.all2[["summ"]][!grepl("MoM",simm.all2[["summ"]][["model"]]),]
+b1<-autoplot(simm.all.HPD.90.2.filter, type = "zip")+theme(axis.text.x = element_text(size = 6),axis.text.y = element_text(size = 6))    
+```
+
+
+```{r, fig.cap=" Zip Plot Comparing Simulation Results for BRGI, and BRGP True Prevalence Value 0.03, CP=0.95.", eval=TRUE, include=T}
+# HPD CI of the prevalence package
+simm.all.HPD.95.2.filter<-simm.all.HPD.95.2
+simm.all.HPD.95.2.filter[["summ"]]<-simm.all2[["summ"]][!grepl("MoM",simm.all2[["summ"]][["model"]]),]
+b2<-autoplot(simm.all.HPD.95.2.filter, type = "zip")+theme(axis.text.x = element_text(size = 6),axis.text.y = element_text(size = 6))    
+```
+ 
+ 
+ 
+
+
+ 
+
+```{r c20}
+
+relhaz$Treat.class <-
+  ifelse(relhaz$prev.STH == 0.03 & relhaz$theta < 0.02,"UT",
+         ifelse(relhaz$prev.STH == 0.01 & relhaz$theta >= 0.02 ,"OT",
+                ifelse(relhaz$theta < 0.02  & relhaz$prev.STH == 0.01,"CT",
+                       ifelse(relhaz$theta >= 0.02  & relhaz$prev.STH == 0.03,"CT",NA))))
+
+
+```
+
+
+
+### Modeled bias using linear regression
+
+The model bias for all simulated \acr{DGM}s can be model with the \acr{DGM} parameters, such as *model* type, number of *schools/days/slides*, and true prevalence. A simple linear regression model is presented in Figure \ref{fig:regcoefplot} for model 1 and 1a, where we can see as expected, that the \acr{MoM} systematically overestimates $\pi$ and that the \acr{BRGP} underestimates it slightly. Model 1 shows that the number of schools has no effect in the amount of bias, or when schools interact with the model type (model 2). 
+
+A more useful approach is observed when the same model is fitted for the \acr{BRGE} models (see Figure \ref{fig:regcoefplot2} for model 2/2a) and for the \acr{MoM} (see Figure \ref{fig:regcoefplot3} for model 3/3a), where it is observed that the true prevalence has a different effect between both family models, a higher prevalence produces overestimation for the \acr{MoM} and underestimation for the \acr{BRGE}. The increase of *days* and *slides* always produces overestimation in all family models. Pooling samples produce overestimation in the \acr{MoM} but underestimation in the \acr{BRGE}. 
+The previously fitted models (1/1a/2/2a/3/3a) can be used for predicting new scenarios. Using the fitted models (2a for the BRGE in the Figure \ref{fig:regcoefplot2} and 3a for \acr{MoM} in Figure \ref{fig:regcoefplot3}) to predict average bias for similar scenarios (20 *schools*, 1 *day*, 1 *slide*, 1% $\pi$), the bias are 0.083 (MoM Pool), 0.059 (MoM Ind),-0.004 (BRGP), and 0.0008 (BRGI).
+
+After analysing the performance of all models, these models will be used to estimate \acr{STHs} prevalence with real data in the next section. 
+
+
+### Probability to correctly treat a population
+
+The threshold prevalence value to decide to conduct a \acr{MDA} in a population is 2% [@truscottIdentifyingOptimalThreshold2017], as such types of population can naturally be considered the ones that required treatment ($\hat \pi \geq 2\%$) and the rest ($\hat \pi < 2\%$).
+
+Using only the \acr{DGM} with $\pi=0.01$ and $\pi=0.03$, the \acr{CT}/\acr{OT}/\acr{UT} probability is presented. Three types of tables are presented: Table \ref{tab:c21} presents the \acr{CT}, \acr{OT}, and \acr{UT} probability for all the models, the Tables \ref{tab:c22} and \ref{tab:c23} present the \acr{CT}, \acr{OT}, and \acr{UT} probability across *schools* and number of *days* x *schools*, respectively. We can observe that the \acr{BRGI} and the \acr{BRGP} have high \acr{CT} percentage compared to the \acr{MoM}. The \acr{MoM} assigns the correct treatment only half of the times (which is not an optimal situation); the rest of the time, it over-treats - but never under-treats- the population. Finally, in Tables \ref{tab:c22} and \ref{tab:c23}, a higher number of *schools* and number of *days* x *schools* slightly reduces the number of under-treated cases for the \acr{BRGI} and the \acr{BRGP}. 
+The \acr{CT}/\acr{OT}/\acr{UT} probability for \acr{DGM} with $\pi=0.1$ and $\pi=0.2$ is not presented, since never provided a case to been not \acr{CT}.
+
+
+```{r,eval=F,include=F}
+\begin{table}[!htb]
+    \begin{minipage}{.52\linewidth}
+      \centering
+
+```
+
+
+\begin{table}[H]
+\centering
+
+```{r c21}
+
+                                                                                                  ctg1<-(table(relhaz$Treat.class, relhaz$model)/(nrow(relhaz)/4))%>%as.data.frame()
+ctg1.w<-ctg1%>%tidyr::pivot_wider(names_from = Var2, values_from = c(Freq))
+library(scales)
+ctg1.w$BRGI<-scales::percent(round(ctg1.w$BRGI, digits=4))
+ctg1.w$BRGP<-scales::percent(round(ctg1.w$BRGP, digits=4))
+ctg1.w$`MoM Ind`<-scales::percent(round(ctg1.w$`MoM Ind`, digits=4))
+ctg1.w$`MoM Pool`<-scales::percent(round(ctg1.w$`MoM Pool`, digits=4))
+
+
+if(knitr::is_latex_output()) {
+colnames(ctg1.w)<-c("",colnames(ctg1.w)[-1])
+ctg1.w%>%kableExtra::kable(  escape=T,booktabs = T ,caption = "Cross tabulation between Percentage of Corrected Treated (CT), Overtreated (OT), \n Undertreated (UT) across the estimator methods", digits=2, align = "lrrrr")%>% kableExtra::kable_styling(font_size = 9, latex_options = c("striped","HOLD_position"))
+} else if (!knitr::is_latex_output() ) {
+
+ctg1.w%>%as.data.frame()%>% flextable::flextable()  %>%autofit()%>%flextable::set_caption("Number of Corrected Treated (CT), Overtreated (OT), \n Undertreated (UT) across the estimator methods")
+}
+
+```
+
+
+ 
+
+```{r c22}
+ 
+ctg2<-xtabs(~ Treat.class+  model+ Schools, data=relhaz)%>%as.data.frame()
+
+ctg2.w<-ctg2%>%tidyr::pivot_wider(names_from = model, values_from = c(Freq))
+#ctg2.w$Total<-colSums(ctg2.w[,c(3:6)])
+
+ctg2.w$BRGI<-scales::percent(round(ctg2.w$BRGI/1600, digits=4))
+ctg2.w$BRGP<-scales::percent(round(ctg2.w$BRGP/1600, digits=4))
+ctg2.w$`MoM Ind`<-scales::percent(round(ctg2.w$`MoM Ind`/1600, digits=4))
+ctg2.w$`MoM Pool`<-scales::percent(round(ctg2.w$`MoM Pool`/1600, digits=4))
+
+
+if(knitr::is_latex_output()) {
+colnames(ctg2.w)<-c("",colnames(ctg2.w)[-1])
+ctg2.w%>%kableExtra::kable(  escape=T,booktabs = T ,caption = "Cross tabulation between Percentage of Corrected Treated (CT), Overtreated (OT), \n Undertreated (UT) across the estimator methods", align = "llrrrr")%>% kableExtra::kable_styling(font_size = 9, latex_options = c("striped","HOLD_position"))
+} else if (!knitr::is_latex_output() ) {
+ 
+ctg2.w%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Number of Corrected Treated (CT), Overtreated (OT), \n Undertreated (UT) across the estimator methods")
+}
+
+```
+ 
+
+```{r,eval=F,include=F}
+
+\end{minipage}%
+  \begin{minipage}{.52\linewidth}
+    \centering
+```
+
+ 
+```{r c23}
+ctg3<-xtabs(~ Treat.class+  model+ daysXslides, data=relhaz)%>%as.data.frame()
+ctg3.w<-ctg3%>%tidyr::pivot_wider(names_from = model, values_from = c(Freq))
+ctg3.w$BRGI<-scales::percent(round(ctg3.w$BRGI/1600, digits=4))
+ctg3.w$BRGP<-scales::percent(round(ctg3.w$BRGP/1600, digits=4))
+ctg3.w$`MoM Ind`<-scales::percent(round(ctg3.w$`MoM Ind`/1600, digits=4))
+ctg3.w$`MoM Pool`<-scales::percent(round(ctg3.w$`MoM Pool`/1600, digits=4))
+
+
+
+if(knitr::is_latex_output()) {
+colnames(ctg3.w)<-c("",colnames(ctg3.w)[-1])
+ctg3.w<-ctg3.w[,-2] 
+ctg3.w%>%kableExtra::kable(escape=T, longtable = TRUE, booktabs = T,  caption = "Cross tabulation between a) Percentage of Corrected Treated (CT), Overtreated (OT), \n Undertreated (UT) across estimator methods and number of $days$*number of $slides$", align = "lrrrr")%>%column_spec(1, width="4cm")%>% kableExtra::kable_styling(font_size = 9,  latex_options = c("striped","HOLD_position"))%>%
+kableExtra::pack_rows("daysXslides=1", 1, 3)%>%
+  kableExtra::pack_rows("daysXslides=2", 4, 6)%>%
+  kableExtra::pack_rows("daysXslides=4", 7, 9)  %>%   kableExtra::column_spec(3, width = "2cm")  %>%   kableExtra::column_spec(4, width = "2cm")    
+} else if (!knitr::is_latex_output() ) {
+ctg3.w%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Cross tabulation between a) Percentage of Corrected Treated (CT), Overtreated (OT), \n Undertreated (UT) across estimator methods and number of $days$*number of $slides$")
+}
+
+
+```
+
+```{r,eval=F,include=F}
+
+   \end{minipage} 
+\end{table}
+```
+
+\end{table}
+
+
+## Ethiopia survey study
+
+An informative descriptive measure based on the observed number of \acr{EPG} for each subject is the categorization of the infection intensity based on the \acr{WHO} standard procedure [@montresorGuidelinesEvaluationSoiltransmitted1998] (see Table \ref{tab:IIWHO}). The frequency for the infection intensity categories for the Ethiopia survey is presented in Table \ref{tab:IIEtiopia}, the majority of subjects whom presents have light infection intensity (93.8-99.2%), while a few subjects have moderate infection intensity (0.8-6.1%) or heavy infection intensity (0.03-0.3%).
+
+The \acr{STHs} prevalence estimations for the Ethiopia survey are presented in Table \ref{tab:EtiPrev1} using all previously compared models. Similarity in the Prevalence estimates values is observed in the prevalence estimates values between the \acr{FGS}, the Individual/Pooled \acr{BRGE}, and the Pooled \acr{MoM} in all \acr{STHs} type; however, only similarity between previous estimators and Individual \acr{MoM} is observed for *Trichurus* \acr{STHs}. The most concerning discrepancy is observed, in general, between Individual \acr{MoM} and the rest of the estimators, additionally is the estimator which has higher *sd* between all models. 
+A comparison of the \acr{STHs} prevalence estimates is presented on the \acr{MDA} treatment decision based on the 2% threshold [@truscottIdentifyingOptimalThreshold2017], where we can see that, for *Ascaris* and *hookworms* \acr{STHs} according all estimators \acr{MDA} treatment should be delivered; however, for *Trichurus* \acr{STHs} based on the Individual sample \acr{MoM}, the \acr{MDA} treatment should be prescribed but not for the rest of the estimators. For *Shistoma* \acr{STHs} according to the \acr{FGS} and the \acr{MoM} (both samples type) treatment is required, not according the average prevalence estimates of the Bayesian models; however, if we consider the Bayesian \acr{IC}, all models suggests that \acr{MDA} treatment is required. Based on the previous results of the simulation study, we suggest choosing \acr{BRGE} estimators since they will have less bias and better coverage than \acr{MoM} estimators.
+
+The additional advantage of the \acr{BRGI} and \acr{BRGP} models is to provide estimators for sensitivity and specificity (see Table \ref{tab:EtiPrev2}), with their \acr{IC}. 
+
+```{r, cache=F}
+#rm(list=ls())
+library(dplyr)
+setwd("C:/Users/32498/Documents/Master EPI/SEM6/STH_THESIS_2023/ThesisSTH/DATA_LEVECKE/Leta et al., 2018/")
+#setwd("./DATA_LEVECKE/Leta et al., 2018/")
+ind <- read.csv("GT_Ind_19JAN2016.csv")
+pool <- read.csv("GT_Pool_19JAN2016.csv")
+ind <- subset(ind,select=-c(Other,Reading.time..MIN.,Reading.time..SEC.,X,X.1,X.2,X.3))
+pool <-subset(pool,select=-c(other,Reading.time..MIN.,Reading.time..SEC.,X,X.1,X.2,X.3,X.4,X.5)) 
+
+
+
+## Organizing Data
+library(plyr)
+
+ind$n <- 1
+
+# EPG
+ind$EPG_AL <- ind$Eggs.of.Ascaris*24
+ind$EPG_HK <- ind$Eggs.of.Hookworm*24
+ind$EPG_TT <- ind$Eggs.of.Trichuris*24
+ind$EPG_SM <- ind$Eggs.of.Schistosoma*24
+
+pool$EPG_AL_P <- pool$Eggs.of.Ascaris*24
+pool$EPG_HK_P <- pool$Eggs.of.Hookworm*24
+pool$EPG_TT_P <- pool$Eggs.of.Trichuris*24
+pool$EPG_SM_P <- pool$Eggs.of.Schistosoma*24
+
+# positive/negative Test results
+ind$P_AL <- ifelse(ind$Eggs.of.Ascaris==0,0,1)
+ind$P_HK <- ifelse(ind$Eggs.of.Hookworm==0,0,1)
+ind$P_TT <- ifelse(ind$Eggs.of.Trichuris==0,0,1)
+ind$P_SM <- ifelse(ind$Eggs.of.Schistosoma==0,0,1)
+ind$mix <- ind$P_AL + ind$P_HK + ind$P_TT + ind$P_SM
+ind$sth <- ind$P_AL + ind$P_HK + ind$P_TT
+ind$P_sth <- ifelse(ind$sth==0,0,1)
+ind$P_ntd <- ifelse(ind$mix==0,0,1)
+
+pool$P_AL_P <- ifelse(pool$Eggs.of.Ascaris==0,0,1)
+pool$P_HK_P <- ifelse(pool$Eggs.of.Hookworm==0,0,1)
+pool$P_TT_P <- ifelse(pool$Eggs.of.Trichuris==0,0,1)
+pool$P_SM_P <- ifelse(pool$Eggs.of.Schistosoma==0,0,1)
+
+## intensity of infection, categories based on the # STH EPG and STH type
+ind$Int_AL <- ifelse(ind$EPG_AL == 0, 0, ifelse(ind$EPG_AL < 5000, 1, ifelse(ind$EPG_AL>49999,3,2)))
+ind$Int_TT <- ifelse(ind$EPG_TT == 0, 0, ifelse(ind$EPG_TT < 1000, 1, ifelse(ind$EPG_TT>9999,3,2)))
+ind$Int_HK<- ifelse(ind$EPG_HK == 0, 0, ifelse(ind$EPG_HK < 2000, 1, ifelse(ind$EPG_TT>3999,3,2)))
+ind$Int_SM<- ifelse(ind$EPG_SM == 0, 0, ifelse(ind$EPG_SM < 100, 1, ifelse(ind$EPG_TT>399,3,2)))
+
+
+#For each subset of a data frame, apply function then combine results into a data frame. 
+# For every region (Woreda code) and school, we are calculating observed STH prevalence and average STH EPG
+sum <-
+  plyr::ddply(
+    .data = ind,
+    .variables = .(Woreda.code, School.Code),
+    .fun = plyr::summarize,
+    n = sum(n),
+    schi_p = round(100 * mean(P_SM), 1),
+    asc_p = round(100 * mean(P_AL), 1),
+    hoo_p = round(100 * mean(P_HK), 1),
+    tri_p = round(100 * mean(P_TT), 1),
+    schi = round(mean(EPG_SM), 1),
+    asc = round(mean(EPG_AL), 1),
+    hoo = round(mean(EPG_HK), 1),
+    tri = round(mean(EPG_TT), 1)
+  )
+
+sum$ntd <- sum$schi_p + sum$asc_p + sum$hoo_p + sum$tri_p
+ntd <- subset(sum, sum$ntd==0)
+```
+
+
+
+```{r}
+## intensity of infection
+ind$Int_AL <- ifelse(ind$EPG_AL == 0, 0, ifelse(ind$EPG_AL < 5000, 1, ifelse(ind$EPG_AL>49999,3,2)))
+ind$Int_TT <- ifelse(ind$EPG_TT == 0, 0, ifelse(ind$EPG_TT < 1000, 1, ifelse(ind$EPG_TT>9999,3,2)))
+ind$Int_HK<- ifelse(ind$EPG_HK == 0, 0, ifelse(ind$EPG_HK < 2000, 1, ifelse(ind$EPG_TT>3999,3,2)))
+
+
+Inf.int<-rbind(
+c("\\textit{Ascaris}",table(ind$Int_AL)),
+c("\\textit{Hookworm}",table(ind$Int_HK)),
+c("\\textit{Trichuris}",table(ind$Int_TT)))
+colnames(Inf.int)<-c("STHs Type","Light","Moderate","Heavy")
+
+Inf.int<-as.data.frame(Inf.int)
+col.sss<-c("Light","Moderate","Heavy")
+Inf.int<-Inf.int%>%mutate_at(col.sss, as.numeric)
+
+
+Inf.int.2<-rbind(
+c("Ascaris","EPG<5000","5000<EPG<49999","EPG>49999"),
+c("Hookworm","EPG<2000","2000<EPG<3999","EPG>3999"),
+c("Trichuris","EPG<1000","1000<EPG<9999","EPG>9999"))
+colnames(Inf.int.2)<-c("STHs Type","Low","Moderate","High")
+
+
+
+```
+
+
+
+
+```{r IIWHO}
+
+
+Inf.int.2<-Inf.int.2[-4,]
+ 
+Inf.int.2[1,1]<-char("\\textit{Ascaris}")
+Inf.int.2[2,1]<-char("\\textit{Hookworms}")
+Inf.int.2[3,1]<-char("\\textit{Trichuris}")
+
+
+if(knitr::is_latex_output()) {Inf.int.2%>%kableExtra::kable( booktabs = T,  caption = "Classification criteria of STHs Infection intensity",escape = FALSE )%>% kableExtra::kable_styling(  latex_options = c("striped","HOLD_position"))
+} else if (!knitr::is_latex_output() ) {
+Inf.int.2%>%as.data.frame%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Classification criteria of STHs Infection intensity")
+}
+
+
+```
+
+
+```{r IIEtiopia}
+
+
+
+if(knitr::is_latex_output()) {
+Inf.int%>%kableExtra::kable( booktabs = T,  caption = "Classification of STH infection intensity for all subjects in Ethiopia survey",escape = FALSE)%>% kableExtra::kable_styling(  latex_options = c("striped","HOLD_position"))%>%
+  kableExtra::add_footnote(c(" "),  notation="none") 
+} else if (!knitr::is_latex_output() ) {
+Inf.int%>%as.data.frame%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Classification of STHs Infection intensity for all subjects in Ethiopia survey")
+}
+
+
+
+
+Inf.int$Total<-Inf.int$Light+Inf.int$Moderate+Inf.int$Heavy
+Inf.int$P.Light<-100*(Inf.int$Light/Inf.int$Total)
+Inf.int$P.Moderate<-100*(Inf.int$Moderate/Inf.int$Total)
+Inf.int$P.Heavy<-100*(Inf.int$Heavy/Inf.int$Total)
+```
+  
+    
+    
+ 
+
+```{r, cache=F}
+### Merging individual and pooled samples
+### 
+# For every region (Woreda code) and school AND POOL.ID, we are calculating observed STH prevalence and average STH EPG
+sum2 <- ddply(ind, .(Woreda.code,School.Code,Pool.ID), plyr::summarize,n = sum(n),schi = mean(EPG_SM),asc= mean(EPG_AL),hoo= mean(EPG_HK),tri= mean(EPG_TT))
+TOT <- merge(sum2,pool,by=c("Woreda.code","School.Code",'Pool.ID'), all.Y = T)
+#TOT[1:10,]
+TOT$N <- 1
+
+
+library(Hmisc)
+var.labels = c(Woreda.code="Woreda code",
+               School.Code="School Code",
+               Pool.ID="Pool ID",
+               n="n",
+               schi="schi",
+               asc="asc",
+               hoo="hoo",
+               tri="tri",
+               min="Time min",
+               sec="Time sec",
+               Woreda.name="Woreda name",
+               School.Name="School Name",
+               Eggs.of.Schistosoma="Eggs of Schistosoma",
+               Eggs.of.Ascaris="Eggs of Ascaris",
+               Eggs.of.Hookworm="Eggs of Hookworm",
+               Eggs.of.Trichuris="Eggs of Trichuris",
+               other="other",
+               EPG_AL_P="EPG_AL_P",
+               EPG_HK_P="EPG_HK_P",
+               EPG_TT_P="EPG_TT_P",
+               EPG_SM_P="EPG_SM_P",
+               P_AL_P="P_AL_P",
+               P_HK_P="P_HK_P",
+               P_TT_P="P_TT_P",
+               P_SM_P="P_SM_P",
+               N="N")
+
+label(TOT) = as.list(var.labels[match(names(TOT), names(var.labels))])
+
+#label(TOT)
+
+library(prevalence)
+```
+
+
+```{r}
+library("plotrix")
+
+#INDividual 
+MoMI <- function(EPG.n=NA, School.n=NA,day.n=1,slide.n=1) {
+True.Pre.MoM <- 1 - dnbinom(0,
+            mu = tapply(EPG.n, School.n, mean),
+            size = tapply(EPG.n, School.n, mean) / ((
+              tapply(EPG.n, School.n, var) / tapply(EPG.n, School.n, mean)) - 24 /(day.n*slide.n) - 1))
+         Perc.zero <- sum(True.Pre.MoM == 'NaN')/length(True.Pre.MoM)
+         True.Pre.MoM <- ifelse(True.Pre.MoM == 'NaN', 0, True.Pre.MoM)
+        
+        SE.True.Pre.MoM <- std.error(as.vector(True.Pre.MoM))
+        SD.True.Pre.MoM <- sd(as.vector(True.Pre.MoM))
+        True.Pre.MoM <- mean(True.Pre.MoM)
+        salida<-data.frame(Prevalence=True.Pre.MoM,SE.Prevalence=SE.True.Pre.MoM,SD.True.Pre.MoM,Perc.zero=Perc.zero)
+        return(salida)
+}
+
+        
+
+#POOLED        
+MoMP <- function(EPG.n=NA, School.n=NA,day.n=1,slide.n=1,pool.size=10) {
+True.Pre.MoM <-1 - dnbinom(0,
+            mu = tapply(EPG.n, School.n, mean),
+            size = tapply(EPG.n, School.n, mean) / ((
+              pool.size*tapply(EPG.n, School.n, var) / tapply(EPG.n, School.n, mean)) - 24 /(day.n*slide.n) - 1))
+         Perc.zero <- sum(True.Pre.MoM == 'NaN')/length(True.Pre.MoM)
+        True.Pre.MoM <- ifelse(True.Pre.MoM == 'NaN', 0, True.Pre.MoM)
+        SE.True.Pre.MoM <- std.error(as.vector(True.Pre.MoM))
+        SD.True.Pre.MoM <- sd(as.vector(True.Pre.MoM))
+        True.Pre.MoM <- mean(True.Pre.MoM)
+        salida<-data.frame(Prevalence=True.Pre.MoM,SE.Prevalence=SE.True.Pre.MoM,SD.True.Pre.MoM,Perc.zero=Perc.zero)
+        return(salida)
+ }
+```
+
+```{r, echo=FALSE, cache=F}
+library(dplyr); library(pander)
+
+#IND PREV
+
+Prev.P_AL<-truePrev(x = sum(ind$P_AL), n = nrow(ind),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00))%>%summary()%>%as.data.frame
+Prev.P_HK<-truePrev(x = sum(ind$P_HK), n = nrow(ind),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00))%>%summary()%>%as.data.frame
+Prev.P_TT<-truePrev(x = sum(ind$P_TT), n = nrow(ind),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00))%>%summary()%>%as.data.frame
+Prev.P_SM<-truePrev(x = sum(ind$P_SM), n = nrow(ind),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00))%>%summary()%>%as.data.frame
+
+
+Prev.P_AL<-Prev.P_AL[3,]
+Prev.P_HK<-Prev.P_HK[3,]
+Prev.P_TT<-Prev.P_TT[3,]
+Prev.P_SM<-Prev.P_SM[3,]
+
+Prev.P_AL<-subset(Prev.P_AL,select = c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+Prev.P_HK<-subset(Prev.P_HK,select = c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+Prev.P_TT<-subset(Prev.P_TT,select = c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+Prev.P_SM<-subset(Prev.P_SM,select = c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+
+
+
+#POOLED PREV
+Prev.P_AL_P<-prevalence::truePrevPools(x=as.integer(TOT$P_AL_P), n=as.integer(TOT$n),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00),prior = c(1, 1),nchains = 2, burnin = 10000, update = 10000,verbose = FALSE)%>%summary()%>%as.data.frame
+Prev.P_HK_P<-prevalence::truePrevPools(x=as.integer(TOT$P_HK_P), n=as.integer(TOT$n),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00), prior = c(1, 1),nchains = 2, burnin = 10000, update = 10000,verbose = FALSE)%>%summary()%>%as.data.frame
+Prev.P_TT_P<-prevalence::truePrevPools(x=as.integer(TOT$P_TT_P), n=as.integer(TOT$n),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00), prior = c(1, 1),nchains = 2, burnin = 10000, update = 10000,verbose = FALSE)%>%summary()%>%as.data.frame
+Prev.P_SM_P<-prevalence::truePrevPools(x=as.integer(TOT$P_SM_P), n=as.integer(TOT$n),SE = ~dunif(0.40, 1.00), SP = ~dunif(0.9, 1.00), prior = c(1, 1),nchains = 2, burnin = 10000, update = 10000,verbose = FALSE)%>%summary()%>%as.data.frame
+
+
+Prev.P_AL_P<-Prev.P_AL_P[3,]
+Prev.P_HK_P<-Prev.P_HK_P[3,]
+Prev.P_TT_P<-Prev.P_TT_P[3,]
+Prev.P_SM_P<-Prev.P_SM_P[3,]
+
+Prev.P_AL_P<-subset(Prev.P_AL_P,select=c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+Prev.P_HK_P<-subset(Prev.P_HK_P,select=c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+Prev.P_TT_P<-subset(Prev.P_TT_P,select=c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+Prev.P_SM_P<-subset(Prev.P_SM_P,select=c(TP.mean,TP.sd,TP.2.5.,TP.97.5.,SE.mean,SE.2.5.,SE.97.5.,SP.mean,SP.2.5.,SP.97.5.))
+
+
+
+#NAIVE PREVALENCE
+Prev.OP_AL<-propCI(x = sum(ind$P_AL), n = nrow(ind),method = "exact", level = 0.95, sortby = "level")
+Prev.OP_HK<-propCI(x = sum(ind$P_HK), n = nrow(ind),method = "exact", level = 0.95, sortby = "level")
+Prev.OP_TT<-propCI(x = sum(ind$P_TT), n = nrow(ind),method = "exact", level = 0.95, sortby = "level")
+Prev.OP_SM<-propCI(x = sum(ind$P_SM), n = nrow(ind),method = "exact", level = 0.95, sortby = "level")
+OP.exact<-rbind(c(Prev.OP_AL$p, NA,Prev.OP_AL$lower,Prev.OP_AL$upper,NA,NA,NA,NA,NA,NA,"Ascaris","GS Exact"),
+c(Prev.OP_HK$p, NA,Prev.OP_HK$lower,Prev.OP_HK$upper,NA,NA,NA,NA,NA,NA,"Hookworm","GS Exact"),
+c(Prev.OP_TT$p, NA,Prev.OP_TT$lower,Prev.OP_TT$upper,NA,NA,NA,NA,NA,NA,"Trichuris","GS Exact"),
+c(Prev.OP_SM$p, NA,Prev.OP_SM$lower,Prev.OP_SM$upper,NA,NA,NA,NA,NA,NA,"Schistosoma","GS Exact"))
+OP.exact<-as.data.frame(OP.exact)
+
+
+#MERGING
+Prev.Ind<-rbind(Prev.P_AL,Prev.P_HK,Prev.P_TT,Prev.P_SM)
+Prev.Ind$STHs.Type<-c("Ascaris","Hookworm","Trichuris","Schistosoma")
+Prev.Ind$model<-c("BRGI","BRGI","BRGI","BRGI")
+Prev.Pool<-rbind(Prev.P_AL_P,Prev.P_HK_P,Prev.P_TT_P,Prev.P_SM_P)
+Prev.Pool$STHs.Type<-c("Ascaris","Hookworm","Trichuris","Schistosoma")
+Prev.Pool$model<-c("BRGP","BRGP","BRGP","BRGP")
+Prev.IP<-rbind(Prev.Ind,Prev.Pool)
+row.names(Prev.IP)<-NULL
+colnames(OP.exact)<-colnames(Prev.IP)
+Prev.IP<-rbind(Prev.IP,OP.exact)
+
+
+MOMI<-rbind(
+c(MoMI(EPG.n=ind$EPG_AL, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[1], 
+  MoMI(EPG.n=ind$EPG_AL, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Ascaris","MoM Ind"),
+c(MoMI(EPG.n=ind$EPG_HK, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[1],
+  MoMI(EPG.n=ind$EPG_HK, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Hookworm","MoM Ind"),
+c(MoMI(EPG.n=ind$EPG_TT, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[1],
+  MoMI(EPG.n=ind$EPG_TT, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Trichuris","MoM Ind"),
+c(MoMI(EPG.n=ind$EPG_SM, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[1],
+  MoMI(EPG.n=ind$EPG_SM, School.n=as.factor(ind$School.Name),day.n=1,slide.n=1)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Schistosoma","MoM Ind"))
+MOMI<-as.data.frame(MOMI)
+colnames(MOMI)<-colnames(Prev.IP)
+
+
+MOMP<-rbind(
+c(MoMP(EPG.n=TOT$EPG_AL_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[1],
+  MoMP(EPG.n=TOT$EPG_AL_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Ascaris","MoM Pool"),
+c(MoMP(EPG.n=TOT$EPG_HK_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[1],
+  MoMP(EPG.n=TOT$EPG_HK_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Hookworm","MoM Pool"),
+c(MoMP(EPG.n=TOT$EPG_TT_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[1],
+  MoMP(EPG.n=TOT$EPG_TT_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Trichuris","MoM Pool"),
+c(MoMP(EPG.n=TOT$EPG_SM_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[1],
+  MoMP(EPG.n=TOT$EPG_SM_P, School.n=TOT$School.Code,day.n=1,slide.n=1,pool.size=10)[3],NA,NA,NA,NA,NA,NA,NA,NA,"Schistosoma","MoM Pool"))
+MOMP<-as.data.frame(MOMP)
+colnames(MOMP)<-colnames(Prev.IP)
+
+Prev.IP<-rbind(Prev.IP,MOMI,MOMP)
+
+
+
+#Label
+var.labels2 = c(TP.mean="estimate",
+TP.sd="sd",
+TP.2.5.="LIC",
+TP.97.5.="UIC",
+SE.mean="Est",
+SE.2.5.="LIC",
+SE.97.5.="UIC",
+SP.mean="Est",
+SP.2.5.="LIC",
+SP.97.5.="UIC",
+STHs.Type="STH type",
+model="Model")
+label(Prev.IP) = as.list( var.labels2[match(names(Prev.IP), names(var.labels2))] )
+
+```
+
+
+
+```{r EtiPrev1, echo=FALSE, cache=F}
+Prev.IP$orden<-ifelse(Prev.IP$STHs.Type=="Ascaris",1,ifelse(Prev.IP$STHs.Type=="Hookworm",2,ifelse(Prev.IP$STHs.Type=="Trichuris",3,ifelse(Prev.IP$STHs.Type=="Schistosoma",4,NA))))
+options(digits=3)
+library(dplyr)
+Prev.IP<-Prev.IP[order(Prev.IP$orden),]
+
+col.sel<-c('TP.mean','TP.sd','TP.2.5.','TP.97.5.','SE.mean','SE.2.5.','SE.97.5.','SP.mean','SP.2.5.','SP.97.5.')
+Prev.IP <- Prev.IP%>% mutate_at(col.sel, as.numeric)%>% mutate(across(col.sel, round, 3))
+
+Prev.IP.text <-
+  as.data.frame(cbind(
+    Prev.IP$model,
+    Prev.IP$STHs.Type,
+    paste0(
+      round(Prev.IP$TP.mean,digits =3),"(",
+      round(Prev.IP$TP.sd,digits =3),") [",
+      round(Prev.IP$TP.2.5.,digits =3),",",
+      round(Prev.IP$TP.97.5.,digits =3),"]"
+    ),
+    paste0(
+      round(Prev.IP$SE.mean,digits = 3),"[",
+      round(Prev.IP$SE.2.5.,digits = 3),",",
+      round(Prev.IP$SE.97.5.,digits = 3),"]"
+    ),
+    paste0(
+      round(Prev.IP$SP.mean,digits = 3),"[",
+      round(Prev.IP$SP.2.5.,digits = 3),",",
+      round(Prev.IP$SP.97.5.,digits = 3),"]"
+    )
+  ))
+
+#substr(Prev.IP.text$V3)
+Prev.IP.text$V3<-gsub("NA", "   -   ", Prev.IP.text$V3)
+Prev.IP.text$V4<-gsub("NA", "   -   ", Prev.IP.text$V4)
+Prev.IP.text$V5<-gsub("NA", "   -   ", Prev.IP.text$V5)
+
+Prev.IP<-subset(Prev.IP,select = -c(orden))
+
+label(Prev.IP) = as.list( var.labels2[match(names(Prev.IP), names(var.labels2))] )
+
+Prev.IP<-subset(Prev.IP,select = -c(STHs.Type))
+Prev.IP<-Prev.IP[,c(11,1:10)]
+
+#str(Prev.IP)
+#library(dplyr)
+Prev.IP.5<-Prev.IP[,c(1:5)]
+
+
+
+Prev.IP.5$graph<-' '
+
+
+# Deleting the Schistosoma: [1:15,]
+
+if(knitr::is_latex_output()) {Prev.IP.5[1:15,]%>% kableExtra::kable( escape=T, booktabs = T, row.names = FALSE, col.names= label(Prev.IP.5),digits=4, caption = "STHs prevalence for Ethiopia survey, according  to  BRGI, BRGP, MoMI, MoMP, and Naive GS exact method estimators")%>%
+  kableExtra::kable_styling(latex_options = c("striped","HOLD_position"),font_size = 9,full_width = F)%>% 
+  kableExtra::add_header_above(c( "Estimator" = 1,"Prevalence" = 5))%>%
+  kableExtra::pack_rows("Ascaris *",1,5,italic=T,hline_after = T)%>%
+  kableExtra::pack_rows("hookworms",6,10,italic=T,hline_after = T)%>%
+  kableExtra::pack_rows("Trichuris", 11, 15,italic=T,hline_after = T)%>%
+  column_spec(6,width = "4em", image = spec_pointrange(x = Prev.IP.5$TP.mean,xmin = Prev.IP.5$TP.2.5.,xmax = Prev.IP.5$TP.97.5., threeparttable = TRUE,vline = c(.02), lim=c(0,0.17)))%>% 
+  kableExtra::add_footnote(c("Est: Estimate, sd: standard deviation, LIC: Lower Interval Credible, \n UIC: Upper Interval Credible, GS: Gold Standard. The vertical line for \n  the graphical represation column of prevalence estimate is set in 2% threshold"), notation="none")%>%
+add_footnote("The MoM Ind estimates of Ascaris prevalence are not presented to avoid \n missing the appropriate scale for the rest of the estimates.",notation = "symbol")
+
+} else if (!knitr::is_latex_output() ) {
+Prev.IP.5%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("STHs prevalence for Ethiopia survey, according  to BRGI, BRGP, MoMI, MoMP, and Naive GS exact method estimators")
+}
+
+
+
+
+options(digits=7)
+
+
+
+```
+
+\begin{table}[H]
+\centering
+```{r EtiPrev2}
+options(digits=4)
+
+# Deleting the Schistosoma: [1:6,]
+
+if(knitr::is_latex_output()) {Prev.IP[(Prev.IP$model=='BRGI'| Prev.IP$model=='BRGP'),c(1,6:11)][1:6,]%>% kableExtra::kable( escape=T,booktabs = T, row.names = FALSE, col.names= label(Prev.IP[(Prev.IP$model=='BRGI'| Prev.IP$model=='BRGP'),c(1,6:11)]),digits=4, caption = "KK Sensitivity, KK Specificity estimates for Ethiopia survey, according  to BRGI, BRGP method estimators")%>%kableExtra::kable_styling(position = "center", latex_options = c("striped","HOLD_position"),font_size = 9)%>% 
+  kableExtra::add_header_above(c( "Estimator" = 1,"Sensitivity" = 3, "Specificity" = 3))%>%
+  kableExtra::pack_rows("Ascaris", 1, 2)%>%
+  kableExtra::pack_rows("Hookworm", 3, 4)%>%
+  kableExtra::pack_rows("Trichuris", 5, 6)%>%
+   kableExtra::add_footnote(c("Est: Estimate, sd: standard deviation, LIC: Lower Interval Credible, \n UIC: Upper Interval Credible"),   notation="none") 
+} else if (!knitr::is_latex_output() ) {
+Prev.IP[(Prev.IP$model=='BRGI'| Prev.IP$model=='BRGP'),c(1,6:11)]%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("KK Sensitivity, KK Specificity estimates for Ethiopia survey, according  to BRGI, BRGP method estimators")
+}
+
+
+
+options(digits=7)
+```
+\end{table}
+
+
+```{r, echo=FALSE, cache=F,eval=F,include=F}
+var.labels3 = c(V3="estimate (sd) [LIC, UIC]",
+V4="estimate [LIC, UIC]",
+V5="estimate [LIC, UIC]",
+V2="STH type",
+V1="Model")
+label(Prev.IP.text) = as.list( var.labels3[match(names(Prev.IP.text), names(var.labels3))] )
+
+
+Prev.IP.text2<-subset(Prev.IP.text,select = -c(V2))
+
+
+
+
+if(knitr::is_latex_output()) {Prev.IP.text2%>% kableExtra::kable( booktabs = T, row.names = FALSE, col.names= label(Prev.IP.text2), caption = "STHs Prevalence, KK Sensitivity, KK Specificity estimates for Ethiopia survey, according to BRGI, BRGP, MoMI, MoMP, and Naive GS exact method estimators")%>%kableExtra::kable_styling(latex_options = c("striped","HOLD_position"),font_size = 10)%>% kableExtra::add_header_above(c("Estimator"=1,"Prevalence" = 1, "Sensitivity" = 1, "Specificity" = 1))%>%
+kableExtra::pack_rows("Ascaris", 1, 5)%>%
+  kableExtra::pack_rows("Hookworm", 6, 10)%>%
+  kableExtra::pack_rows("Trichuris", 11, 15)%>%
+  kableExtra::pack_rows("Schistosoma", 16, 20)%>% kableExtra::add_footnote(c("sd: standard deviation, LIC: Lower Interval Credible, UIC: Upper Interval Credible, GS: Gold Standard"), notation="none") 
+} else if (!knitr::is_latex_output() ) {
+Prev.IP.text2%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("STHs Prevalence, KK Sensitivity, KK Specificity estimates for Ethiopia survey, according to BRGI, BRGP, MoMI, MoMP, and Naive GS exact method estimators")
+}
+
+
+
+options(digits=7)
+
+```
+
+
+
+
+
+
+# Discussion and Conclussion
+
+
+In regard to the simulation results, for the \acr{BRGE} estimators we found a similar result as in @letaComparisonIndividualPooled2018, where the prevalence estimator using pooled samples \acr{KK} underestimates prevalence when it is compared to individual samples estimation. However, in our study the \acr{MoM} estimators for pooled samples overestimated the prevalence.
+
+
+The presence of zero counts in the samples has been modelled using a Poisson distribution in the \acr{MoM}, which can be considered as a limitation of the model. Additionally, the \acr{MoM} estimator cannot directly estimate the prevalence in the *schools* where the observed prevalence and the variance is zero, for those case manually we need to assume that the estimated prevalence in zero. This two elements can be improved if the \acr{MoM} is used in a Bayesian context, where this issues will not be a limitation anymore.
+
+An additional limitation with respect \acr{BRGE} estimators used on the simulated data was that we only used only one type of non-informative priors (sensitivity, specificity and prevalence), it could be important to check how robust can be the \{BRGE} estimators under different prior selections. 
+
+In the Ethiopia survey, most of subjects present light infection intensity (93.8-99.2%). According to the most reliable model estimator (\acr{BRGI}) the \acr{STHs} prevalence was *Ascaris* 2.83%, *Hookworm* 4.38%, and *Trichuris* 0.59%. In a meta-analysis [@chelkebaPrevalenceSoiltransmittedHelminths2022] the \acr{STHs} prevalence estimation in Amhara region was 15% (95% \acr{CI}: 11–19%) for *Ascaris*, 1% (95% \acr{CI}: 0–2%) for Trichuris, 16% (95% \acr{CI}: 13–19%) for *hookworms*. Compared to our \acr{STHs} prevalence estimation in Amhara region only for *Trichuris* our estimation (0.59%) is included in the \acr{CI} calculated by @chelkebaPrevalenceSoiltransmittedHelminths2022. On the rest of the \acr{STHs} our estimation are below the \acr{CI} presented by @chelkebaPrevalenceSoiltransmittedHelminths2022. In our study, according the majority of the models \acr{MDA} is recommended for *Ascaris* and *Hookworm*, and not recommended for *Trichuris*. 
+
+Our estimates for \acr{SE} in \acr{KK} test (for all \acr{STHs}) are 64-66% are aligned with the previous study from @nikolaySensitivityDiagnosticTests2014, where the \acr{SE} is around 53–80% for the low intensity settings, which it is a similar setting that the one analyzed in our survey data.
+
+After concluding that, in the reviewed scenarios the \acr{RGE} methods outperform the \acr{MoM} in all selected \acr{DGM} parameters (bias, \acr{CP90}, and \acr{CP95}). The true prevalence has different effects between \acr{RGE} and \acr{MoM} estimators, where a higher prevalence produces overestimation for the \acr{MoM} and underestimation for the \acr{BRGE}. Increase of number of *days* and *slides* always produces overestimation in all family models. Pooling samples produce overestimation in the \acr{MoM} but underestimation in the \acr{BRGE}.
+Performance between the \acr{BRGI} and \acr{BRGP} estimators is quite similar, where the \acr{BRGI} is slightly better for bias, and \acr{CP90} and \acr{CP95}. Despite the number of tested schools was not a predictor of the bias for all estimators, a higher number of schools was related to a lower bias variability for all scenarios. 
+Since the \acr{BRGP} tends to underestimate compare to \acr{BRGI}, the probability to \acr{MDA} \acr{UT} is slightly higher when decision are made based on \acr{BRGP} estimates. 
+
+A way to improve the current study is comparing the current models with other Bayesian models [@barenboldEstimatingTruePrevalence2021; @barenboldTranslatingPreventiveChemotherapy2018] which used the infection intensity to inform the prevalence estimation.
+
+In addition, an update of the \acr{MoM} estimator could be its reformulation in a Bayesian context since it can overcome the limitation when *schools* have an observed prevalence equal to zero, in addition to updating the prior information with the observed data.
+
+\clearpage 
+\pagebreak 
+\clearpage 
+\pagebreak 
+
+# Appendix
+
+
+
+```{r c12a12, fig.cap=" Zip Plot Comparing Simulation Results for BRGI, and BRGP True Prevalence Value 0.01, CP=0.90/0.95", eval=TRUE, include=T, fig.height=9, eval=F, include=F}
+## Zip Plot Comparing Simulation Results for BRGI, and BRGP True Prevalence Value 0.01/0.03 
+
+library(ggpubr)
+
+ggarrange(a1,a2,labels = c("A", "B"),ncol = 1, nrow = 2)
+
+
+```
+ 
+```{r c14a12, fig.cap=" Zip Plot Comparing Simulation Results for BRGI, and BRGP True Prevalence Value 0.03, CP=0.90/0.95.", eval=TRUE, include=T, fig.height=9, eval=F, include=F}
+
+
+ggarrange(b1,b2,labels = c("A", "B"),ncol = 1, nrow = 2)
+```
+
+
+
+
+
+
+
+
+
+```{r}
+gridd<-expand.grid(prev.STH=c(0.1,0.2),schools=c(10,20),n.days=c(1,2 ), n.slide=c(1,2 ),pooln1=10, CV.i=1.5,mu=1000, CV.d=0.75,   pooln2=25, CV.d.10=0.6,CV.d.25=0.5, CV.s=0.25, plotss=FALSE, TPR=0.88*0.88,TNR=0.97*0.97, n.s=100, misclasifica=FALSE)
+
+gridd$nnn=gridd$schools*gridd$n.s
+
+gridd$dataset<-1:nrow(gridd)
+
+gridd$name<-paste0("Dataset: ", gridd$dataset,"Shools: ",gridd$schools,". STH Prev:",gridd$prev.STH,". Days:",gridd$n.days,". Slides:",gridd$n.slide)
+gridd$daysXsample<-gridd$n.days*gridd$n.slide
+gridd<-gridd[order(gridd$daysXsample),]
+
+gridd<-gridd[order(gridd$prev.STH,gridd$schools,gridd$n.days,gridd$n.slide),]
+
+gridd$scenario<-gridd$Scenario<-1:nrow(gridd)
+
+
+gridd$Info_level<-ifelse(gridd$daysXsample==1,"Low",ifelse(gridd$daysXsample==2,"Low Medium",ifelse(gridd$daysXsample==3,"Medium",ifelse(gridd$daysXsample==4,"Medium High",ifelse(gridd$daysXsample==6,"High", ifelse(gridd$daysXsample==9,"Very High",NA))))))
+ 
+grid.sim<-vector(mode='list', length=nrow(gridd))
+for (ji in 1:nrow(gridd)) {
+grid.sim[[ji]]<-gridd[ji,]
+}
+ 
+reps=1:100
+
+gridd.print<-subset(gridd,select = -c(plotss,TPR,TNR, misclasifica,dataset,scenario,Info_level, pooln2))
+
+```
+
+
+
+```{r ch1020_TabDGM}
+library(dplyr)
+gridd.print<-subset(gridd,select =c(Scenario,prev.STH,schools, n.days,n.slide, mu,pooln1,CV.i,CV.d,CV.d.10,CV.s,n.s,nnn))
+ 
+colnames(gridd.print)<-c("Scenario",
+                           "$\\pi_{schools}$",
+                           "$n_{schools}$",
+                           "$n_{days}$",
+                           "$n_{slides}$",
+                           "$\\mu$",                           
+                           "$\\eta$",
+                           "$CV_i$",
+                           "$CV_d^{1}$",
+                           "$CV_d^{10}$",
+                           "$CV_s$",
+                           "n.s",
+                           "N")
+ 
+
+
+
+if(knitr::is_latex_output()) {gridd.print%>%kableExtra::kable(row.names = FALSE,caption = "Additional considered scenarios as data generating mechanism for the simulation study. Prevalence 0.1 and 0.2", escape = F)%>% kableExtra::add_header_above(c("Scenarios" = 5, "Assumptions" = 2, "Agregattion parameters" = 4, "Sample size" = 2))%>% kableExtra::kable_styling(font_size = 8, latex_options = c("striped","HOLD_position"))%>% kableExtra::add_footnote(escape = F, c("$\\pi_{schools}$: true prevalence for each school, $n_{schools}$ is the number of schools; $n_{days}$ is the number of $days$ where test are conducted, $n_{slides}$ is the number $slides$ collected for each day; $\\mu$  is the population mean EPG, $\\eta$ is the the number of subjects for each pool; $CV_i$, $CV_d^{1}$, $CV_d^{10}$, $CV_s$ are the Coefficient of Variation related to subject, related to $days$ in each subject sample, related to days in each pool sample, related to each $slide$, respectively;  $n.s$ is the number of subjects per $schools$, and $N$ is the total number of subjects in the whole population."), threeparttable = TRUE,  notation="none") 
+
+} else if (!knitr::is_latex_output() ) {
+gridd.print%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Additional considered scenarios as data generating mechanism for the simulation study. Prevalence 0.1 and 0.2")
+}
+
+
+ 
+```
+
+
+
+ 
+
+
+```{r ch1020_res, eval=F,include=F }
+ 
+results3<-fit_models(dataDF=TEMPO, gridsDF=grid.sim,   model="Method of Moment")
+results4<-fit_models(dataDF=TEMPO, gridsDF=grid.sim,   model="Method of Moment Pool")
+
+result1<-results1[[1]]
+
+result2<-results2[[1]]
+
+result3<-results3[[1]]
+result4<-results4[[1]]
+
+ 
+```
+
+```{r ch1020_loaddata}
+setwd("C:/Users/32498/Documents/Master EPI/SEM6/STH_THESIS_2023/TesisSTH_10_20")
+load(file = "model1020_26may23.RData")
+
+```
+
+
+
+```{r ch1020_c9} 
+
+names(result1)<-c(result1[[1]][["Scenario name"]][1],
+                 result1[[2]][["Scenario name"]][1],
+                 result1[[3]][["Scenario name"]][1],
+                 result1[[4]][["Scenario name"]][1],
+                 result1[[5]][["Scenario name"]][1],
+                 result1[[6]][["Scenario name"]][1],
+                 result1[[7]][["Scenario name"]][1],
+                 result1[[8]][["Scenario name"]][1],
+                 result1[[9]][["Scenario name"]][1],
+                 result1[[10]][["Scenario name"]][1],
+                 result1[[11]][["Scenario name"]][1],
+                 result1[[12]][["Scenario name"]][1],
+                 result1[[13]][["Scenario name"]][1],
+                 result1[[14]][["Scenario name"]][1],
+                 result1[[15]][["Scenario name"]][1],
+                 result1[[16]][["Scenario name"]][1])
+names(result2)<-c(result2[[1]][["Scenario name"]][1],
+                  result2[[2]][["Scenario name"]][1],
+                  result2[[3]][["Scenario name"]][1],
+                  result2[[4]][["Scenario name"]][1],
+                  result2[[5]][["Scenario name"]][1],
+                  result2[[6]][["Scenario name"]][1],
+                  result2[[7]][["Scenario name"]][1],
+                  result2[[8]][["Scenario name"]][1],
+                  result2[[9]][["Scenario name"]][1],
+                  result2[[10]][["Scenario name"]][1],
+                  result2[[11]][["Scenario name"]][1],
+                  result2[[12]][["Scenario name"]][1],
+                  result2[[13]][["Scenario name"]][1],
+                  result2[[14]][["Scenario name"]][1],
+                  result2[[15]][["Scenario name"]][1],
+                  result2[[16]][["Scenario name"]][1])
+names(result3)<-c(result3[[1]][["Scenario name"]][1],
+                  result3[[2]][["Scenario name"]][1],
+                  result3[[3]][["Scenario name"]][1],
+                  result3[[4]][["Scenario name"]][1],
+                  result3[[5]][["Scenario name"]][1],
+                  result3[[6]][["Scenario name"]][1],
+                  result3[[7]][["Scenario name"]][1],
+                  result3[[8]][["Scenario name"]][1],
+                  result3[[9]][["Scenario name"]][1],
+                  result3[[10]][["Scenario name"]][1],
+                  result3[[11]][["Scenario name"]][1],
+                  result3[[12]][["Scenario name"]][1],
+                  result3[[13]][["Scenario name"]][1],
+                  result3[[14]][["Scenario name"]][1],
+                  result3[[15]][["Scenario name"]][1],
+                  result3[[16]][["Scenario name"]][1])
+names(result4)<-c(result4[[1]][["Scenario name"]][1],
+                  result4[[2]][["Scenario name"]][1],
+                  result4[[3]][["Scenario name"]][1],
+                  result4[[4]][["Scenario name"]][1],
+                  result4[[5]][["Scenario name"]][1],
+                  result4[[6]][["Scenario name"]][1],
+                  result4[[7]][["Scenario name"]][1],
+                  result4[[8]][["Scenario name"]][1],
+                  result4[[9]][["Scenario name"]][1],
+                  result4[[10]][["Scenario name"]][1],
+                  result4[[11]][["Scenario name"]][1],
+                  result4[[12]][["Scenario name"]][1],
+                  result4[[13]][["Scenario name"]][1],
+                  result4[[14]][["Scenario name"]][1],
+                  result4[[15]][["Scenario name"]][1],
+                  result4[[16]][["Scenario name"]][1])
+ 
+for (kk in 1:16) {
+  colnames(result1[[kk]])<-colnames(result2[[kk]])<-c("Scenario name",
+"prev.STH",
+"Scenario",
+"Dataset n",
+"Rep n",
+"model",
+"theta.sd",
+"theta",
+"theta.var",
+"theta.se",
+"LIC",
+"UIC",
+"iHPD90",
+"uHPD90",
+"iHPD95",
+"uHPD95",
+"n")
+
+}
+
+ 
+
+
+results.merged<-c(result1,result2,result3,result4)
+relhaz2 <- do.call(
+  rbind.data.frame,
+  results.merged
+)
+
+row.names(relhaz2) <- NULL
+
+
+relhaz2$prev.STH<-as.numeric(relhaz2$prev.STH)
+relhaz2$theta.sd<-as.numeric(relhaz2$theta.sd)
+relhaz2$theta<-as.numeric(relhaz2$theta)
+relhaz2$theta.se<-as.numeric(relhaz2$theta.se)
+relhaz2$theta.var<-as.numeric(relhaz2$theta.var)
+relhaz2$LIC<-as.numeric(relhaz2$LIC)
+relhaz2$UIC<-as.numeric(relhaz2$UIC)
+relhaz2$iHPD90<-as.numeric(relhaz2$iHPD90)
+relhaz2$uHPD90<-as.numeric(relhaz2$uHPD90)
+relhaz2$iHPD95<-as.numeric(relhaz2$iHPD95)
+relhaz2$uHPD95<-as.numeric(relhaz2$uHPD95)
+relhaz2$n<-as.numeric(relhaz2$n)
+relhaz2$`Rep n`<-as.numeric(relhaz2$`Rep n`)
+
+```
+
+
+
+```{r ch1020_c10, tab.cap="Prevalence check-up"} 
+
+relhaz2$model<-ifelse(relhaz2$model=="Bayesian Rogen-Gladen","BRGI",ifelse(relhaz2$model=="Bayesian Rogen-Gladen Pool","BRGP", ifelse(relhaz2$model=="Method of Moment","MoM Ind",ifelse(relhaz2$model=="Method of Moment Pool","MoM Pool",relhaz2$model))))
+
+
+relhaz2$Schools<-ifelse(grepl("Shools: 10",relhaz2$`Scenario name`),10,20)
+relhaz2$Days<-ifelse(grepl("Days:1",relhaz2$`Scenario name`),1,2)
+relhaz2$Slides<-ifelse(grepl("Slides:1",relhaz2$`Scenario name`),1,2)
+relhaz2$daysXslides<-relhaz2$Days*relhaz2$Slides
+
+
+#chequear el orden de TP, y previas integraciones
+prevalencias<-unique(relhaz2$prev.STH)
+
+
+
+simm.all.HPD.95.10<- rsimsum::simsum(data =   subset(relhaz2,prev.STH==0.1), estvarname = "theta", se ="theta.se", true = 0.1, methodvar = "model", ci.limits = c("iHPD95", "uHPD95"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.95 ) )
+simm.all.HPD.90.10<- rsimsum::simsum(data =   subset(relhaz2,prev.STH==0.1), estvarname = "theta", se ="theta.se", true = 0.1, methodvar = "model", ci.limits = c("iHPD90", "uHPD90"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.90 ) )
+simm.all.HPD.95.20<- rsimsum::simsum(  data =   subset(relhaz2,prev.STH==0.2), estvarname = "theta", se ="theta.se", true = 0.2, methodvar = "model", ci.limits = c("iHPD95", "uHPD95"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.95 ) )
+simm.all.HPD.90.20<- rsimsum::simsum(data =   subset(relhaz2,prev.STH==0.2), estvarname = "theta", se ="theta.se", true = 0.2, methodvar = "model", ci.limits = c("iHPD90", "uHPD90"),x = TRUE,ref = "BRGI", by =c("Schools", "Days","Slides"), control=list(level=0.90 ) )
+
+#simm.all.HPD.95.1;simm.all.HPD.95.2
+```
+
+
+
+```{r ch1020_box1, fig.cap="Boxplot for model bias in each scenario and number of $days \\cdot slides$. The scenarios are ordered according to the average bias of each one; true prevalence = 0.1.", fig.height=8}
+ 
+
+relhaz2$bias<-relhaz2$theta-relhaz2$prev.STH
+ 
+
+ggplot(subset(relhaz2,prev.STH==0.1), aes(x=reorder(Scenario,bias,na.rm = TRUE),y=bias, pattern = as.factor(Schools), fill=as.factor(daysXslides))) +
+  geom_boxplot(position="dodge",aes(fill=as.factor(daysXslides)))+geom_hline(yintercept=0, linetype="dashed", color = "black")+ facet_wrap(~model, ncol=1, scales = "free")+
+  geom_point(size=0.2,alpha = 0.3)+ labs(x="Scenarios")+
+  scale_fill_manual(name = "daysXslides", values = c("#FDECCD", "#BAE4B3", "#6BADD5")) +
+  geom_boxplot_pattern(position = position_dodge(preserve = "single"), pattern_angle = 45, pattern_density = 0.01, pattern_spacing = 0.025, pattern_key_scale_factor = 0.6) +
+  guides(pattern = guide_legend(override.aes = list(fill = "white")), fill = guide_legend(override.aes = list(pattern = "none")))+theme(legend.position="bottom", panel.background = element_blank(), axis.line = element_line(colour = "grey"), panel.grid.major = element_line(colour = "lightgray"),panel.grid.minor = element_line(colour = "lightgray"), 
+panel.grid.major.y = element_blank())+labs(pattern=expression(n[schools]))+ylab("Bias")
+
+
+```
+
+```{r ch1020_box2, fig.cap="Boxplot for model bias for each scenario and number of $days$ x $slides$. The scenarios are ordered according to the average bias of each one; true prevalence = 0.2.", fig.height=8}
+
+ggplot(subset(relhaz2,prev.STH==0.2), aes(x=reorder(Scenario,bias,na.rm = TRUE),y=bias, pattern = as.factor(Schools), fill=as.factor(daysXslides))) +
+  geom_boxplot(position="dodge",aes(fill=as.factor(daysXslides)))+geom_hline(yintercept=0, linetype="dashed", color = "black")+ facet_wrap(~model, ncol=1, scales = "free")+
+  geom_point(size=0.2,alpha = 0.3)+ labs(x="Scenarios")+
+  scale_fill_manual(name = "daysXslides", values = c("#FDECCD", "#BAE4B3", "#6BADD5")) +
+  geom_boxplot_pattern(position = position_dodge(preserve = "single"), pattern_angle = 45, pattern_density = 0.01, pattern_spacing = 0.025, pattern_key_scale_factor = 0.6) +
+  guides(pattern = guide_legend(override.aes = list(fill = "white")), fill = guide_legend(override.aes = list(pattern = "none")))+theme(legend.position="bottom", panel.background = element_blank(), axis.line = element_line(colour = "grey"), panel.grid.major = element_line(colour = "lightgray"),panel.grid.minor = element_line(colour = "lightgray"), 
+panel.grid.major.y = element_blank())+labs(pattern=expression(n[schools]))+ylab("Bias")
+
+```
+
+
+
+
+```{r ch1020_c11a, echo=FALSE} 
+
+p.simm.all.HPD.95.1<-summary(simm.all.HPD.95.1)[["summ"]]
+p.simm.all.HPD.95.1<-p.simm.all.HPD.95.1[p.simm.all.HPD.95.1$stat %in% c("bias",    "cover", "mse"  ),]
+p.simm.all.HPD.95.1$stat<-ifelse(p.simm.all.HPD.95.1$stat=="cover","CP 95%",p.simm.all.HPD.95.1$stat)
+
+p.simm.all.HPD.90.1<-summary(simm.all.HPD.90.1)[["summ"]]
+p.simm.all.HPD.90.1<-p.simm.all.HPD.90.1[p.simm.all.HPD.90.1$stat=="cover",]
+p.simm.all.HPD.90.1$stat<-ifelse(p.simm.all.HPD.90.1$stat=="cover","CP 90%",p.simm.all.HPD.90.1$stat)
+p.simm.all.HPD.95.1<-rbind(p.simm.all.HPD.95.1,p.simm.all.HPD.90.1)
+
+p.simm.all.HPD.95.1<-subset(p.simm.all.HPD.95.1,select=-c(lower,upper))
+p.simm.all.HPD.95.1<-p.simm.all.HPD.95.1[order(p.simm.all.HPD.95.1$stat),]
+p.simm.all.HPD.95.1$est<-ifelse((p.simm.all.HPD.95.1$stat=="CP 90%"|p.simm.all.HPD.95.1$stat=="CP 95%")&(grepl("MoM",p.simm.all.HPD.95.1$model)),NA,p.simm.all.HPD.95.1$est)
+```
+
+
+```{r ch1020_result1, echo=FALSE} 
+
+pp.1<-p.simm.all.HPD.95.1%>%tidyr::pivot_wider(names_from = model, values_from = c(est,mcse))
+
+pp.1<-pp.1[order(pp.1$Schools,pp.1$Days,pp.1$Slides),]
+pp.1$Scenarios<-rep(1:(nrow(gridd)/2),each=4)
+
+pp.1.scene<-subset(pp.1,select=c(stat,est_BRGI,est_BRGP,`est_MoM Ind`,`est_MoM Pool`))
+pp.1.perf<-subset(pp.1,select=c(stat,Schools,Days,Slides,est_BRGI,mcse_BRGI,est_BRGP,mcse_BRGP,`est_MoM Ind`,`mcse_MoM Ind`,`est_MoM Pool`,`mcse_MoM Pool`))
+
+
+
+
+
+
+if(knitr::is_latex_output()) {
+  
+colnames(pp.1.perf)<-c("Measures","$n_{schools}$","$n_{days}$","$n_{slides}$","est","mcse","est","mcse","est","mcse","est","mcse")
+colnames(pp.1.scene)<-c("Measures","Estimates", "Estimates", "Estimates", "Estimates" )
+  pp.1.scene%>%kableExtra::kable( caption = "Performance measure for prevalence=0.1, for each scenario by model", escape=T, booktabs = T, digits=5, format="latex")%>%kableExtra::kable_styling(latex_options = c("striped", "scale_down"),full_width =T) %>% kableExtra::add_header_above(c("Performance" = 1, "BRGI" = 1, "BRGP" = 1, "MoM Ind" = 1, "MoM Pool" = 1))%>%
+  kableExtra::pack_rows("Scenario 1", 1, 4)%>%
+  kableExtra::pack_rows("Scenario 2", 5, 8)%>%
+  kableExtra::pack_rows("Scenario 3", 9, 12)%>%
+  kableExtra::pack_rows("Scenario 4", 13, 16)%>%
+  kableExtra::pack_rows("Scenario 5", 17, 20)%>%
+  kableExtra::pack_rows("Scenario 6", 21, 24)%>%
+  kableExtra::pack_rows("Scenario 7", 25, 28)%>%
+  kableExtra::pack_rows("Scenario 8", 29, 32)
+} else if (!knitr::is_latex_output() ) {
+pp.1.scene%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Performance measure for prevalence=0.1, for each scenario by model")
+}
+
+
+
+```
+
+ 
+  
+
+
+
+
+```{r ch1020_c11b, echo=FALSE} 
+
+p.simm.all.HPD.95.2<-summary(simm.all.HPD.95.2)[["summ"]]
+p.simm.all.HPD.95.2<-p.simm.all.HPD.95.2[p.simm.all.HPD.95.2$stat %in% c("bias",    "cover", "mse"  ),]
+p.simm.all.HPD.95.2$stat<-ifelse(p.simm.all.HPD.95.2$stat=="cover","CP 95%",p.simm.all.HPD.95.2$stat)
+
+p.simm.all.HPD.90.2<-summary(simm.all.HPD.90.2)[["summ"]]
+p.simm.all.HPD.90.2<-p.simm.all.HPD.90.2[p.simm.all.HPD.90.2$stat=="cover",]
+p.simm.all.HPD.90.2$stat<-ifelse(p.simm.all.HPD.90.2$stat=="cover","CP 90%",p.simm.all.HPD.90.2$stat)
+p.simm.all.HPD.95.2<-rbind(p.simm.all.HPD.95.2,p.simm.all.HPD.90.2)
+
+p.simm.all.HPD.95.2<-subset(p.simm.all.HPD.95.2,select=-c(lower,upper))
+p.simm.all.HPD.95.2<-p.simm.all.HPD.95.2[order(p.simm.all.HPD.95.2$stat),]
+p.simm.all.HPD.95.2$est<-ifelse((p.simm.all.HPD.95.2$stat=="CP 90%"|p.simm.all.HPD.95.2$stat=="CP 95%")&(grepl("MoM",p.simm.all.HPD.95.2$model)),NA,p.simm.all.HPD.95.2$est)
+```
+
+
+
+
+
+```{r ch1020_result2, echo=FALSE} 
+
+pp.2<-p.simm.all.HPD.95.2%>%tidyr::pivot_wider(names_from = model, values_from = c(est,mcse))
+pp.2<-pp.2[order(pp.2$Schools,pp.2$Days,pp.2$Slides),]
+pp.2$Scenarios<-rep((1+8):(nrow(gridd)/2+8),each=4)
+
+pp.2.scene<-subset(pp.2,select=c(stat,est_BRGI,est_BRGP,`est_MoM Ind`,`est_MoM Pool`))
+pp.2.perf<-subset(pp.2,select=c(stat,Schools,Days,Slides,est_BRGI,mcse_BRGI,est_BRGP,mcse_BRGP,`est_MoM Ind`,`mcse_MoM Ind`,`est_MoM Pool`,`mcse_MoM Pool`))
+
+
+
+
+
+
+
+
+
+if(knitr::is_latex_output()) {
+colnames(pp.2.perf)<-c("Measures","$n_{schools}$","$n_{days}$","$n_{slides}$","est","mcse","est","mcse","est","mcse","est","mcse")
+  
+
+
+
+colnames(pp.2.scene)<-c("Measures","Estimates", "Estimates", "Estimates", "Estimates" )
+  pp.2.scene%>%kableExtra::kable(  caption = "Performance measure for prevalence=0.2, for each scenario by model",escape=T,  booktabs = T, format="latex", digits=5 )%>%kableExtra::kable_styling(latex_options = c("striped", "scale_down"),full_width = T)%>%kableExtra::add_header_above(c("Performance" = 1, "BRGI" = 1, "BRGP" = 1, "MoM Ind" = 1, "MoM Pool" = 1))%>%
+  kableExtra::pack_rows("Scenario 9", 1, 4)%>%
+  kableExtra::pack_rows("Scenario 10", 5, 8)%>%
+  kableExtra::pack_rows("Scenario 11", 9, 12)%>%
+  kableExtra::pack_rows("Scenario 12", 13, 16)%>%
+  kableExtra::pack_rows("Scenario 13", 17, 20)%>%
+  kableExtra::pack_rows("Scenario 14", 21, 24)%>%
+  kableExtra::pack_rows("Scenario 15", 25, 28)%>%
+  kableExtra::pack_rows("Scenario 16", 29,32)
+} else if (!knitr::is_latex_output() ) {
+pp.2.scene%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Performance measure for prevalence=0.2, for each scenario by model")
+}
+
+
+
+```
+
+
+
+```{r regcoefplot, fig.cap="Models 1 and 1a, linear regression models for $\\pi$ bias using the DGM parameters and interaction as predictors; all models are included."}
+relhaz3<-rbind(relhaz[,-23],relhaz2)
+
+library(broom)
+m1<-lm(bias~model+ Schools+ Days+ Slides+ prev.STH, data=relhaz3)
+m2<-update(m1, . ~ . + model*Schools+model*Slides+model*Days, data=relhaz3)
+library(dotwhisker)
+dwplot(list(m1, m2))+scale_fill_Publication ()+ theme_Publication()+ geom_vline(xintercept = 0,color="grey", linetype = "dashed")
+```
+
+```{r m11a, results='asis', message=FALSE, warning=FALSE, verbose=FALSE}
+
+#library(stargazer)
+#stargazer(m1,m2, type="latex", title="Models 1 and 1a, linear regression models for bias using the DGM parameters and interaction as predictors; all models are included.", keep.stat="n", single.row=TRUE)
+#stargazer , column.labels='Model 1 & Model 1a', font.size="small")`
+```
+
+```{r, include=F, eval=F}
+# \begin{table}[!htbp] \centering 
+#   \caption{Models 1 and 1a, linear regression models for bias using the DGM parameters and interaction as # predictors; all models are included.} 
+#   \label{} 
+# \begin{tabular}{@{\extracolsep{5pt}}lcc} 
+# \\[-1.8ex]\hline 
+# \hline \\[-1.8ex] 
+#  & \multicolumn{2}{c}{\textit{Dependent variable:}} \\ 
+# \cline{2-3} 
+# \\[-1.8ex] & \multicolumn{2}{c}{Bias} \\ 
+# \\[-1.8ex] & (Model 1) & (Model 1a)\\ 
+# \hline \\[-1.8ex] 
+#  modelBRGP & $-$0.005$^{***}$ (0.001) & $-$0.004 (0.007) \\ 
+#   modelMoM Ind & 0.169$^{***}$ (0.001) & 0.117$^{***}$ (0.007) \\ 
+#   modelMoM Pool & 0.189$^{***}$ (0.001) & 0.147$^{***}$ (0.007) \\ 
+#   Schools & $-$0.0001 (0.0001) & $-$0.00003 (0.0002) \\ 
+#   Days & 0.011$^{***}$ (0.001) & 0.001 (0.002) \\ 
+#   Slides & 0.008$^{***}$ (0.001) & 0.001 (0.002) \\ 
+#   prev.STH & 0.556$^{***}$ (0.007) & 0.556$^{***}$ (0.007) \\ 
+#   modelBRGP:Schools &  & $-$0.0001 (0.0003) \\ 
+#   modelMoM Ind:Schools &  & $-$0.0001 (0.0003) \\ 
+#   modelMoM Pool:Schools &  & $-$0.00002 (0.0003) \\ 
+#   modelBRGP:Slides &  & 0.0002 (0.003) \\ 
+#   modelMoM Ind:Slides &  & 0.015$^{***}$ (0.003) \\ 
+#   modelMoM Pool:Slides &  & 0.011$^{***}$ (0.003) \\ 
+#   modelBRGP:Days &  & 0.0004 (0.003) \\ 
+#   modelMoM Ind:Days &  & 0.021$^{***}$ (0.003) \\ 
+#   modelMoM Pool:Days &  & 0.018$^{***}$ (0.003) \\ 
+#   Constant & $-$0.076$^{***}$ (0.003) & $-$0.053$^{***}$ (0.005) \\ 
+#  \hline \\[-1.8ex] 
+# Observations & 12,800 & 12,800 \\ 
+# \hline 
+# \hline \\[-1.8ex] 
+# \textit{Note:}  & \multicolumn{2}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+# \end{tabular} 
+# \end{table} 
+
+```
+
+
+
+```{r}
+
+Prev.IP[(Prev.IP$model=='BRGI'| Prev.IP$model=='BRGP'),c(1,6:11)][1:6,]%>% kableExtra::kable( escape=T,booktabs = T, row.names = FALSE, col.names= label(Prev.IP[(Prev.IP$model=='BRGI'| Prev.IP$model=='BRGP'),c(1,6:11)]),digits=4, caption = "KK Sensitivity, KK Specificity estimates for Ethiopia survey, according  to BRGI, BRGP method estimators")%>%kableExtra::kable_styling(position = "center", latex_options = c("striped","HOLD_position"),font_size = 9)%>% 
+  kableExtra::add_header_above(c( "Estimator" = 1,"Sensitivity" = 3, "Specificity" = 3))%>%
+  kableExtra::pack_rows("Ascaris", 1, 2)%>%
+  kableExtra::pack_rows("Hookworm", 3, 4)%>%
+  kableExtra::pack_rows("Trichuris", 5, 6)%>%
+   kableExtra::add_footnote(c("Est: Estimate, sd: standard deviation, LIC: Lower Interval Credible, \n UIC: Upper Interval Credible"),   notation="none") 
+
+
+```
+
+
+```{r regcoefplot2, fig.cap="Models 2 and 2a, Linear regression models for $\\pi$ bias using the DGM parameters and interaction as predictors; only the Bayesian models are included.", fig.height=5, fig.width=8}
+relhaz3.BR<-subset(relhaz3,model=="BRGP"|model=="BRGI")
+m1.BR<-lm(bias~model+ Schools+ Days+ Slides+ prev.STH, data=relhaz3.BR)
+m2.BR<-update(m1, . ~ . + model*Schools+model*Slides+model*Days, data=relhaz3.BR)
+dwplot(list(m1.BR, m2.BR))+scale_fill_Publication ()+ theme_Publication()+ geom_vline(xintercept = 0,color="grey", linetype = "dashed")
+```
+
+```{r regcoefplot3, fig.cap="Models 3 and 3a, linear regression models for $\\pi$ bias using DGM parameters and interaction as predictors; only the MoM are included.", fig.height=5, fig.width=8}
+relhaz3.MoM<-subset(relhaz3,model=="MoM Ind"|model=="MoM Pool")
+m1.MoM<-lm(bias~model+ Schools+ Days+ Slides+ prev.STH, data=relhaz3.MoM)
+m2.MoM<-update(m1, . ~ . + model*Schools+model*Slides+model*Days, data=relhaz3.MoM)
+dwplot(list(m1.MoM, m2.MoM))+scale_fill_Publication ()+ theme_Publication()+ geom_vline(xintercept = 0,color="grey", linetype = "dashed")
+```
+
+```{r}
+df.p <- data.frame(Schools=c(10, 20),
+                 Days=c(1, 2),
+                 Slides=c(1,2),
+                 prev.STH=c(0.01,0.03,0.1,0.2),
+                 model=c("",""))
+#unique(relhaz3.MoM$prev.STH)
+
+
+newdata.MoM1 = data.frame(Schools=c(20),Days=c(1),Slides=c(1),prev.STH=c(0.01),model=c("MoM Pool"))
+newdata.MoM2 = data.frame(Schools=c(20),Days=c(1),Slides=c(1),prev.STH=c(0.01),model=c("MoM Ind"))
+
+#predict(m2.MoM, newdata.MoM1)
+#predict(m2.MoM, newdata.MoM2)
+
+newdata.BR1 = data.frame(Schools=c(20),Days=c(1),Slides=c(1),prev.STH=c(0.01),model=c("BRGP"))
+newdata.BR2 = data.frame(Schools=c(20),Days=c(1),Slides=c(1),prev.STH=c(0.01),model=c("BRGI"))
+#predict(m2.BR, newdata.BR1)
+#predict(m2.BR, newdata.BR2)
+#predict(m1.MoM, newdata2)
+
+```
+
+
+```{r ba_all1, fig.cap="Comparison of $\\hat \\pi$ estimators using Bland-Altman plot type between all models; true prevalence value 0.01.", eval=TRUE, include=T, fig.height=9}
+autoplot(simm.all.HPD.95.1, type = "est_ba")+ggtitle("")+
+  geom_point(   fill = "#7fc97f", size = .05,   alpha=0.1, stroke=NA)+scale_colour_Publication()+ theme_Publication()
+```
+ 
+```{r ba_all2, fig.cap="Comparison of $\\hat\\pi$ estimators using Bland-Altman plot type between all models; true prevalence value 0.03.", eval=TRUE, include=T, fig.height=9}
+autoplot(simm.all.HPD.95.2, type = "est_ba")+ggtitle("")+
+  geom_point(   fill = "#7fc97f", size = .05,   alpha=0.1, stroke=NA)+scale_colour_Publication()+ theme_Publication()
+```
+
+```{r ba_all3, fig.cap="Comparison of $\\hat\\pi$ estimators using Bland-Altman plot type between all models; true prevalence value 0.1.", eval=TRUE, include=T, fig.height=9}
+autoplot(simm.all.HPD.95.10, type = "est_ba")+ggtitle("")+
+  geom_point(  fill = "#7fc97f", size = .05,  alpha=0.1, stroke=NA)+scale_colour_Publication()+ theme_Publication()
+```
+ 
+```{r ba_all4, fig.cap="Comparison of the $\\hat\\pi$ estimators using Bland-Altman plot type between all models; true prevalence value 0.2.", eval=TRUE, include=T, fig.height=9}
+autoplot(simm.all.HPD.95.20, type = "est_ba")+ggtitle("")+
+  geom_point(   fill = "#7fc97f", size = 0.05,   alpha=0.1, stroke=NA)+scale_colour_Publication()+ theme_Publication()
+```
+
+
+
+\clearpage 
+\pagebreak
+
+```{r mcse1}
+
+
+if(knitr::is_latex_output()) {
+  
+pp.1.perf<-pp.1.perf[order(pp.1.perf$Measures),]
+  pp.1.perf[,-1]%>%kableExtra::kable(booktabs = T, escape=T, caption = "Performance measure for prevalence=0.01, for each scenario by model", digits=5) %>%kableExtra::kable_styling(latex_options = c("striped","HOLD_position"),full_width = F, font_size = 7.5) %>% kableExtra::add_header_above(c( "Scenarios" = 3, "BRGI" = 2, "BRGP" = 2, "MoM Ind" = 2, "MoM Pool" = 2))   %>%kableExtra::pack_rows("Bias", 1, 8)%>%kableExtra::pack_rows("CP 90%", 9, 16)%>%kableExtra::pack_rows("CP 95%", 17, 24)%>%kableExtra::pack_rows("mse", 25, 32)
+
+} else if (!knitr::is_latex_output() ) {
+pp.1.perf[,-1]%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Performance measure for prevalence=0.01, for each scenario by model")
+}
+
+
+
+```
+
+\clearpage 
+\pagebreak
+```{r mcse2}
+
+
+
+
+if(knitr::is_latex_output()) {
+pp.2.perf<-pp.2.perf[order(pp.2.perf$Measures),]
+  
+  pp.2.perf[,-1]%>%kableExtra::kable( booktabs = T, escape=T, caption = "Performance measure for prevalence=0.03, for each scenario by model", digits=5) %>%kableExtra::kable_styling(latex_options = c("striped","HOLD_position"),full_width = F, font_size = 7.5) %>% kableExtra::add_header_above(c("Scenarios" = 3, "BRGI" = 2, "BRGP" = 2, "MoM Ind" = 2, "MoM Pool" = 2))%>%kableExtra::pack_rows("Bias", 1, 8)%>%kableExtra::pack_rows("CP 90%", 9, 16)%>%kableExtra::pack_rows("CP 95%", 17, 24)%>%kableExtra::pack_rows("mse", 25, 32)
+} else if (!knitr::is_latex_output() ) {
+pp.2.perf[,-1]%>% flextable::flextable()%>%autofit()%>%flextable::set_caption("Performance measure for prevalence=0.03, for each scenario by model")
+}
+
+
+```
+
+\clearpage 
+\pagebreak
+
+
+## Individual \acr{BRGE} model Bugs code
+\begin{verbatim}
+  model{
+    TestR ~ Bern(AP)
+    AP=SE * pi+(1-pi)*(1-SP)
+    SE ~ B(3,9)
+    SP ~ B(2,10)
+    pi ~ B(8,4)
+  }
+\end{verbatim}
+
+
+## Pooled \acr{BRGE} model Bugs code
+
+\begin{verbatim}
+  model {
+    for (i in 1:N) {
+    x[i] ~ dbern(AP[i])
+    AP[i] <- SEpool[i]*(1-pow(1 - TP, n[i])) + (1 - SPpool[i])*pow(1 - TP, n[i])
+    SEpool[i] <- 1 - (pow(1 - SE, n[i]*TP)*pow(SP, n[i]*(1 - TP)))
+    SPpool[i] <- pow(SP, n[i])
+    }
+    SE~ dbeta(1,1)
+    SP~ dbeta(1,1)
+    TP ~ dbeta(1,1)
+  }
+\end{verbatim}
+
+To promote the reproducibility of the current study, all codes are available on the following repository  https://github.com/ptadgerv/ThesisSTH.
+
+
+\clearpage 
+\pagebreak
+
+
+# References
